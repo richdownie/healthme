@@ -3,7 +3,7 @@ class ActivitiesController < ApplicationController
 
   def index
     @date = params[:date] ? Date.parse(params[:date]) : Date.today
-    @activities = Activity.on_date(@date).order(created_at: :desc)
+    @activities = current_user.activities.on_date(@date).order(created_at: :desc)
     @grouped = @activities.group_by(&:category)
     @calories_in = @activities.calories_intake
     @calories_burned = @activities.calories_burned
@@ -11,11 +11,11 @@ class ActivitiesController < ApplicationController
   end
 
   def new
-    @activity = Activity.new(performed_on: params[:date] || Date.today)
+    @activity = current_user.activities.new(performed_on: params[:date] || Date.today)
   end
 
   def create
-    @activity = Activity.new(activity_params)
+    @activity = current_user.activities.new(activity_params)
 
     if @activity.save
       redirect_to activities_path(date: @activity.performed_on), notice: "Activity logged!"
@@ -44,7 +44,7 @@ class ActivitiesController < ApplicationController
   private
 
   def set_activity
-    @activity = Activity.find(params[:id])
+    @activity = current_user.activities.find(params[:id])
   end
 
   def activity_params

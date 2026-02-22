@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_22_165252) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_22_172311) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -47,9 +47,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_165252) do
     t.date "performed_on"
     t.string "unit"
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.decimal "value"
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
+  create_table "keypair_auth_challenges", force: :cascade do |t|
+    t.string "challenge", null: false
+    t.boolean "consumed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "pubkey_hex"
+    t.datetime "updated_at", null: false
+    t.index ["challenge"], name: "index_keypair_auth_challenges_on_challenge", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "display_name"
+    t.string "npub", null: false
+    t.string "pubkey_hex", null: false
+    t.datetime "updated_at", null: false
+    t.index ["npub"], name: "index_users_on_npub", unique: true
+    t.index ["pubkey_hex"], name: "index_users_on_pubkey_hex", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activities", "users"
 end

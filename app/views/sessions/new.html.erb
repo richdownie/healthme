@@ -1,0 +1,99 @@
+<div class="container" data-controller="keypair auth nostr">
+  <header class="app-header">
+    <h1>HealthMe</h1>
+    <p class="tagline">Sign in with your keypair</p>
+  </header>
+
+  <% if flash[:alert] %>
+    <div class="flash-notice"><%= flash[:alert] %></div>
+  <% end %>
+
+  <!-- Nostr Extension Button (hidden until extension detected) -->
+  <div class="extension-section">
+    <button type="button"
+            class="btn btn-extension btn-block"
+            style="display:none;"
+            data-nostr-target="extensionBtn"
+            data-action="click->nostr#signInWithExtension">
+      Sign in with Nostr Extension
+    </button>
+    <p class="extension-status" style="display:none;" data-nostr-target="extensionStatus"></p>
+  </div>
+
+  <div class="auth-divider" data-nostr-target="divider" style="display:none;">
+    <span>or enter your key manually</span>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-action="click->keypair#showGenerate">
+        New Keypair
+      </button>
+      <button type="button" class="auth-tab" data-action="click->keypair#showExisting">
+        I Have a Key
+      </button>
+    </div>
+
+    <!-- Generate New Keypair Panel -->
+    <div data-keypair-target="generatePanel">
+      <p class="auth-hint">Generate a new keypair to create your account. Save your private key — it's your only way to sign in.</p>
+
+      <button type="button" class="btn btn-primary btn-block" data-action="click->keypair#generate">
+        Generate Keypair
+      </button>
+
+      <div data-keypair-target="keypairDisplay" style="display:none;">
+        <div class="form-group">
+          <label>Your Public Key (npub)</label>
+          <input type="text" readonly class="form-input mono-field" data-keypair-target="npubField">
+        </div>
+
+        <div class="form-group">
+          <label>Your Private Key (nsec)</label>
+          <div class="nsec-warning">
+            Save this key now! It cannot be recovered. Write it down or store it in a password manager.
+          </div>
+          <input type="text" readonly class="form-input mono-field" data-keypair-target="nsecField">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" data-action="click->auth#signIn">
+          Sign In
+        </button>
+      </div>
+    </div>
+
+    <!-- Use Existing Key Panel -->
+    <div data-keypair-target="existingPanel" style="display:none;">
+      <p class="auth-hint">Paste your private key to sign in to your existing account.</p>
+
+      <div class="form-group">
+        <label>Private Key (nsec or hex)</label>
+        <input type="password" class="form-input"
+               placeholder="nsec1... or 64-char hex"
+               data-keypair-target="nsecInput"
+               data-action="input->keypair#deriveFromNsec">
+      </div>
+
+      <div data-keypair-target="derivedDisplay" style="display:none;">
+        <div class="form-group">
+          <label>Derived Public Key</label>
+          <input type="text" readonly class="form-input mono-field" data-keypair-target="derivedNpub">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" data-action="click->auth#signIn">
+          Sign In
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden fields for auth and nostr controllers -->
+  <input type="hidden" data-auth-target="pubkeyHex">
+  <input type="hidden" data-auth-target="secretKey">
+  <input type="hidden" data-auth-target="challengeUrl" value="<%= challenge_session_path %>">
+  <input type="hidden" data-auth-target="sessionUrl" value="<%= session_path %>">
+  <input type="hidden" data-auth-target="csrfToken" value="<%= form_authenticity_token %>">
+  <input type="hidden" data-nostr-target="challengeUrl" value="<%= challenge_session_path %>">
+  <input type="hidden" data-nostr-target="sessionUrl" value="<%= session_path %>">
+  <input type="hidden" data-nostr-target="csrfToken" value="<%= form_authenticity_token %>">
+</div>

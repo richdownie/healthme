@@ -24,6 +24,13 @@
   </head>
 
   <body>
+    <% if signed_in? %>
+      <nav class="app-nav">
+        <span class="nav-user"><%= current_user.short_npub %></span>
+        <%= button_to "Sign Out", session_path, method: :delete, class: "btn btn-sm btn-outline" %>
+      </nav>
+    <% end %>
+
     <main>
       <%= yield %>
     </main>

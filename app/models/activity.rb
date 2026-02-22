@@ -1,6 +1,7 @@
 class Activity < ApplicationRecord
   CATEGORIES = %w[meal walk run pushups exercise sleep water weight other].freeze
 
+  belongs_to :user, optional: true
   has_one_attached :photo
 
   validates :category, presence: true, inclusion: { in: CATEGORIES }
