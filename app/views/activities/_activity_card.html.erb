@@ -1,0 +1,32 @@
+<div class="activity-card">
+  <% if activity.photos.any? %>
+    <div class="activity-photo <%= 'photo-grid' if activity.photos.count > 1 %>">
+      <% activity.photos.each do |photo| %>
+        <%= image_tag photo, alt: activity.category %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="activity-details">
+    <% if activity.display_value %>
+      <span class="activity-value"><%= activity.display_value %></span>
+    <% end %>
+    <% if activity.calories.present? && activity.calories > 0 %>
+      <span class="activity-calories <%= activity.intake? ? 'cal-in' : 'cal-out' %>">
+        <%= activity.intake? ? "+" : "-" %><%= activity.calories %> cal
+      </span>
+    <% end %>
+    <% if activity.notes.present? %>
+      <p class="activity-notes"><%= activity.notes %></p>
+    <% end %>
+    <span class="activity-time"><%= activity.created_at.in_time_zone.strftime("%-I:%M %p") %></span>
+  </div>
+
+  <div class="activity-actions">
+    <%= button_to "Repeat", duplicate_activity_path(activity), method: :post, class: "btn btn-sm btn-outline" %>
+    <%= link_to "Edit", edit_activity_path(activity), class: "btn btn-sm" %>
+    <%= button_to "Delete", activity_path(activity), method: :delete,
+        class: "btn btn-sm btn-danger",
+        data: { turbo_confirm: "Remove this entry?" } %>
+  </div>
+</div>

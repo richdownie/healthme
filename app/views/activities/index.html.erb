@@ -67,6 +67,9 @@
         </div>
         <span class="target-numbers"><%= @calories_burned %> / <%= number_with_delimiter(@recommendations[:activity_burn]) %> cal</span>
       </div>
+      <div class="target-detail">
+        Goal = daily burn (<%= number_with_delimiter(@recommendations[:tdee]) %>) − resting (<%= number_with_delimiter(@recommendations[:bmr]) %>)
+      </div>
       <% if @calories_burned > 0 %>
         <div class="exercise-legend">
           <% if walk_cal > 0 %><span class="legend-item"><span class="legend-dot legend-walk"></span>Walk <%= walk_cal %></span><% end %>
@@ -113,51 +116,41 @@
   <% end %>
 
   <% if @activities.any? %>
-    <div class="activity-groups">
-      <% @grouped.each do |category, activities| %>
-        <section class="category-group">
-          <h3 class="category-title">
-            <span class="category-icon"><%= category_icon(category) %></span>
-            <%= category_label(category) %>
-            <span class="category-count">(<%= activities.size %>)</span>
-          </h3>
+    <div data-controller="sort-toggle">
+      <div class="sort-toggle-bar">
+        <button class="btn btn-sm btn-outline" data-sort-toggle-target="btn" data-action="sort-toggle#toggle">Timeline</button>
+      </div>
 
-          <% activities.each do |activity| %>
-            <div class="activity-card">
-              <% if activity.photos.any? %>
-                <div class="activity-photo <%= 'photo-grid' if activity.photos.count > 1 %>">
-                  <% activity.photos.each do |photo| %>
-                    <%= image_tag photo, alt: activity.category %>
-                  <% end %>
-                </div>
+      <div class="activity-groups" data-sort-toggle-target="grouped">
+        <% @grouped.each do |category, activities| %>
+          <details class="category-group">
+            <summary class="category-title">
+              <span class="category-icon"><%= category_icon(category) %></span>
+              <%= category_label(category) %>
+              <span class="category-count">(<%= activities.size %>)</span>
+              <% cat_cal = activities.sum { |a| a.calories.to_i } %>
+              <% if cat_cal > 0 %>
+                <span class="category-cal"><%= activities.first&.intake? ? "+" : "-" %><%= cat_cal %> cal</span>
               <% end %>
-
-              <div class="activity-details">
-                <% if activity.display_value %>
-                  <span class="activity-value"><%= activity.display_value %></span>
-                <% end %>
-                <% if activity.calories.present? && activity.calories > 0 %>
-                  <span class="activity-calories <%= activity.intake? ? 'cal-in' : 'cal-out' %>">
-                    <%= activity.intake? ? "+" : "-" %><%= activity.calories %> cal
-                  </span>
-                <% end %>
-                <% if activity.notes.present? %>
-                  <p class="activity-notes"><%= activity.notes %></p>
-                <% end %>
-                <span class="activity-time"><%= activity.created_at.in_time_zone.strftime("%-I:%M %p") %></span>
-              </div>
-
-              <div class="activity-actions">
-                <%= button_to "Repeat", duplicate_activity_path(activity), method: :post, class: "btn btn-sm btn-outline" %>
-                <%= link_to "Edit", edit_activity_path(activity), class: "btn btn-sm" %>
-                <%= button_to "Delete", activity_path(activity), method: :delete,
-                    class: "btn btn-sm btn-danger",
-                    data: { turbo_confirm: "Remove this entry?" } %>
-              </div>
+              <span class="category-chevron"></span>
+            </summary>
+            <div class="category-activities">
+              <% activities.each do |activity| %>
+                <%= render partial: "activities/activity_card", locals: { activity: activity } %>
+              <% end %>
             </div>
-          <% end %>
-        </section>
-      <% end %>
+          </details>
+        <% end %>
+      </div>
+
+      <div class="activity-groups" data-sort-toggle-target="timeline" style="display: none;">
+        <% @activities.sort_by { |a| [a.category == "water" ? 1 : 0, a.created_at] }.each do |activity| %>
+          <div class="timeline-entry">
+            <span class="timeline-icon"><%= category_icon(activity.category) %></span>
+            <%= render partial: "activities/activity_card", locals: { activity: activity } %>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% else %>
     <div class="empty-state">
