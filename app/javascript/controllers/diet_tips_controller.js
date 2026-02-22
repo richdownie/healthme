@@ -1,0 +1,33 @@
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["content", "button"]
+  static values = { url: String }
+
+  async load() {
+    this.buttonTarget.disabled = true
+    this.buttonTarget.textContent = "Thinking..."
+    this.contentTarget.innerHTML = '<p class="tips-loading">Analyzing your food log...</p>'
+    this.contentTarget.style.display = "block"
+
+    try {
+      const response = await fetch(this.urlValue)
+      if (!response.ok) throw new Error("Failed to load tips")
+
+      const data = await response.json()
+      this.contentTarget.innerHTML = this.#formatTips(data.tips)
+      this.buttonTarget.textContent = "Refresh Tips"
+    } catch (e) {
+      this.contentTarget.innerHTML = '<p class="tips-error">Could not generate tips. Make sure you have activities logged and an API key configured.</p>'
+      this.buttonTarget.textContent = "Get Diet Tips"
+    }
+
+    this.buttonTarget.disabled = false
+  }
+
+  #formatTips(text) {
+    const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    const html = escaped.replace(/\n/g, "<br>")
+    return `<div class="tips-content">${html}</div>`
+  }
+}

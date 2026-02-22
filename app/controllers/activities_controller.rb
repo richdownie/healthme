@@ -80,6 +80,24 @@ class ActivitiesController < ApplicationController
     redirect_to activities_path(date: new_activity.performed_on), notice: "Activity logged!"
   end
 
+  def diet_tips
+    date = params[:date] ? Date.parse(params[:date]) : Date.today
+    activities = current_user.activities.on_date(date)
+    recommendations = current_user.recommendations
+
+    tips = DietAdvisor.advise(
+      user: current_user,
+      activities: activities,
+      recommendations: recommendations
+    )
+
+    if tips
+      render json: { tips: tips }
+    else
+      render json: { error: "Could not generate tips" }, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     date = @activity.performed_on
     @activity.destroy
