@@ -1,0 +1,94 @@
+<div class="container">
+  <header class="app-header">
+    <h1>HealthMe</h1>
+    <p class="tagline">Your daily health tracker</p>
+  </header>
+
+  <nav class="date-nav">
+    <%= link_to "← Prev", activities_path(date: @date - 1.day), class: "btn btn-outline" %>
+    <div class="date-display">
+      <h2><%= @date == Date.today ? "Today" : @date.strftime("%A") %></h2>
+      <span class="date-full"><%= @date.strftime("%B %-d, %Y") %></span>
+    </div>
+    <% if @date < Date.today %>
+      <%= link_to "Next →", activities_path(date: @date + 1.day), class: "btn btn-outline" %>
+    <% else %>
+      <span class="btn btn-outline disabled">Next →</span>
+    <% end %>
+  </nav>
+
+  <% if notice.present? %>
+    <div class="flash-notice"><%= notice %></div>
+  <% end %>
+
+  <div class="calorie-summary">
+    <div class="calorie-card calorie-in">
+      <span class="calorie-label">Consumed</span>
+      <span class="calorie-number"><%= number_with_delimiter(@calories_in) %></span>
+      <span class="calorie-unit">cal</span>
+    </div>
+    <div class="calorie-card calorie-out">
+      <span class="calorie-label">Burned</span>
+      <span class="calorie-number"><%= number_with_delimiter(@calories_burned) %></span>
+      <span class="calorie-unit">cal</span>
+    </div>
+    <div class="calorie-card calorie-net <%= @calories_net >= 0 ? 'calorie-positive' : 'calorie-negative' %>">
+      <span class="calorie-label">Net</span>
+      <span class="calorie-number"><%= @calories_net >= 0 ? "+" : "" %><%= number_with_delimiter(@calories_net) %></span>
+      <span class="calorie-unit">cal</span>
+    </div>
+  </div>
+
+  <%= link_to "＋ Log Activity", new_activity_path(date: @date), class: "btn btn-primary btn-block" %>
+
+  <% if @activities.any? %>
+    <div class="activity-groups">
+      <% @grouped.each do |category, activities| %>
+        <section class="category-group">
+          <h3 class="category-title">
+            <span class="category-icon"><%= category_icon(category) %></span>
+            <%= category.capitalize %>
+            <span class="category-count">(<%= activities.size %>)</span>
+          </h3>
+
+          <% activities.each do |activity| %>
+            <div class="activity-card">
+              <% if activity.photo.attached? %>
+                <div class="activity-photo">
+                  <%= image_tag activity.photo, alt: activity.category %>
+                </div>
+              <% end %>
+
+              <div class="activity-details">
+                <% if activity.display_value %>
+                  <span class="activity-value"><%= activity.display_value %></span>
+                <% end %>
+                <% if activity.calories.present? && activity.calories > 0 %>
+                  <span class="activity-calories <%= activity.intake? ? 'cal-in' : 'cal-out' %>">
+                    <%= activity.intake? ? "+" : "-" %><%= activity.calories %> cal
+                  </span>
+                <% end %>
+                <% if activity.notes.present? %>
+                  <p class="activity-notes"><%= activity.notes %></p>
+                <% end %>
+                <span class="activity-time"><%= activity.created_at.strftime("%-I:%M %p") %></span>
+              </div>
+
+              <div class="activity-actions">
+                <%= link_to "Edit", edit_activity_path(activity), class: "btn btn-sm" %>
+                <%= button_to "Delete", activity_path(activity), method: :delete,
+                    class: "btn btn-sm btn-danger",
+                    data: { turbo_confirm: "Remove this entry?" } %>
+              </div>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p>No activities logged for this day.</p>
+      <p>Tap the button above to start tracking!</p>
+    </div>
+  <% end %>
+</div>

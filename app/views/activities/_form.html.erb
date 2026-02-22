@@ -1,0 +1,60 @@
+<%= form_with(model: activity, class: "activity-form") do |f| %>
+  <% if activity.errors.any? %>
+    <div class="form-errors">
+      <h4><%= pluralize(activity.errors.count, "error") %> prevented saving:</h4>
+      <ul>
+        <% activity.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :category %>
+    <%= f.select :category,
+        Activity::CATEGORIES.map { |c| [c.capitalize, c] },
+        { prompt: "Select category..." },
+        class: "form-input" %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group form-group-half">
+      <%= f.label :value, "Amount" %>
+      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input" %>
+    </div>
+
+    <div class="form-group form-group-half">
+      <%= f.label :unit %>
+      <%= f.text_field :unit, placeholder: "e.g. miles, reps, oz", class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :calories, "Calories" %>
+    <%= f.number_field :calories, min: 0, placeholder: "e.g. 350", class: "form-input" %>
+    <span class="form-hint">Consumed for meals, burned for exercise</span>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :notes %>
+    <%= f.text_area :notes, rows: 3, placeholder: "What did you do?", class: "form-input" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :photo, "Photo / Screenshot" %>
+    <%= f.file_field :photo, accept: "image/*", class: "form-input" %>
+    <% if activity.photo.attached? %>
+      <div class="photo-preview">
+        <%= image_tag activity.photo, alt: "Current photo" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.hidden_field :performed_on %>
+
+  <div class="form-actions">
+    <%= f.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", activities_path(date: activity.performed_on), class: "btn btn-outline" %>
+  </div>
+<% end %>
