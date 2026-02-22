@@ -1,0 +1,103 @@
+<div class="container">
+  <h2>Your Profile</h2>
+
+  <%= form_with(model: @user, url: profile_path, method: :patch, class: "activity-form") do |f| %>
+    <% if @user.errors.any? %>
+      <div class="form-errors">
+        <h4><%= pluralize(@user.errors.count, "error") %> prevented saving:</h4>
+        <ul>
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <fieldset class="profile-section">
+      <legend class="section-title">Basic Info</legend>
+
+      <div class="form-group">
+        <%= f.label :display_name, "Display Name" %>
+        <%= f.text_field :display_name, placeholder: "Optional nickname", class: "form-input" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :date_of_birth, "Date of Birth" %>
+        <%= f.date_field :date_of_birth, class: "form-input", max: Date.today.iso8601 %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sex %>
+        <%= f.select :sex, User::SEXES.map { |s| [s.capitalize, s] },
+            { include_blank: "Select..." }, class: "form-input" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :race_ethnicity, "Race / Ethnicity (optional)" %>
+        <%= f.text_field :race_ethnicity, placeholder: "Optional", class: "form-input" %>
+      </div>
+    </fieldset>
+
+    <fieldset class="profile-section">
+      <legend class="section-title">Body Measurements</legend>
+
+      <div class="form-row">
+        <div class="form-group form-group-half">
+          <%= f.label :weight, "Weight (lbs)" %>
+          <%= f.number_field :weight, step: 0.1, min: 0, placeholder: "e.g. 165", class: "form-input" %>
+        </div>
+        <div class="form-group form-group-half">
+          <%= f.label :height, "Height (inches)" %>
+          <%= f.number_field :height, step: 0.1, min: 0, placeholder: "e.g. 70", class: "form-input" %>
+          <span class="form-hint">e.g. 70 = 5'10"</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="profile-section">
+      <legend class="section-title">Health Data</legend>
+
+      <div class="form-row">
+        <div class="form-group form-group-half">
+          <%= f.label :blood_pressure_systolic, "BP Systolic" %>
+          <%= f.number_field :blood_pressure_systolic, min: 60, max: 250, placeholder: "120", class: "form-input" %>
+        </div>
+        <div class="form-group form-group-half">
+          <%= f.label :blood_pressure_diastolic, "BP Diastolic" %>
+          <%= f.number_field :blood_pressure_diastolic, min: 30, max: 150, placeholder: "80", class: "form-input" %>
+        </div>
+      </div>
+      <span class="form-hint">Blood pressure in mmHg</span>
+
+      <div class="form-group" style="margin-top: 16px;">
+        <%= f.label :health_concerns, "Health Concerns" %>
+        <%= f.text_area :health_concerns, rows: 3,
+            placeholder: "e.g. diabetes, high blood pressure, allergies...",
+            class: "form-input" %>
+      </div>
+    </fieldset>
+
+    <fieldset class="profile-section">
+      <legend class="section-title">Activity & Goals</legend>
+
+      <div class="form-group">
+        <%= f.label :activity_level, "Activity Level" %>
+        <%= f.select :activity_level,
+            User::ACTIVITY_LEVELS.map { |l| [l.humanize, l] },
+            { include_blank: "Select..." }, class: "form-input" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :goal, "Goal" %>
+        <%= f.select :goal,
+            User::GOALS.map { |g| [g.humanize, g] },
+            { include_blank: "Select..." }, class: "form-input" %>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <%= f.submit "Save Profile", class: "btn btn-primary" %>
+      <%= link_to "Cancel", profile_path, class: "btn btn-outline" %>
+    </div>
+  <% end %>
+</div>

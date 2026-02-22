@@ -1,13 +1,13 @@
 class Activity < ApplicationRecord
-  CATEGORIES = %w[meal walk run pushups exercise sleep water weight other].freeze
+  CATEGORIES = %w[food walk run pushups exercise sleep water weight other].freeze
 
   belongs_to :user, optional: true
-  has_one_attached :photo
+  has_many_attached :photos
 
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validates :performed_on, presence: true
 
-  INTAKE_CATEGORIES = %w[meal water].freeze
+  INTAKE_CATEGORIES = %w[food water].freeze
   BURN_CATEGORIES = %w[walk run pushups exercise].freeze
 
   scope :on_date, ->(date) { where(performed_on: date) }

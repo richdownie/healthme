@@ -1,0 +1,103 @@
+<div class="container">
+  <header class="app-header">
+    <h1>Your Profile</h1>
+  </header>
+
+  <% if notice.present? %>
+    <div class="flash-notice"><%= notice %></div>
+  <% end %>
+
+  <% if @user.profile_complete? && @recommendations %>
+    <section class="recommendations-card">
+      <h3 class="section-title">Daily Recommendations</h3>
+      <p class="goal-badge"><%= @recommendations[:goal_label] %></p>
+
+      <div class="rec-grid">
+        <div class="rec-item">
+          <span class="rec-label">Daily Burn</span>
+          <span class="rec-value"><%= number_with_delimiter(@recommendations[:daily_burn]) %></span>
+          <span class="rec-unit">cal/day</span>
+        </div>
+        <div class="rec-item">
+          <span class="rec-label">Calorie Target</span>
+          <span class="rec-value"><%= number_with_delimiter(@recommendations[:daily_calories]) %></span>
+          <span class="rec-unit">cal/day</span>
+        </div>
+        <div class="rec-item">
+          <span class="rec-label">Water</span>
+          <span class="rec-value"><%= @recommendations[:water_cups] %></span>
+          <span class="rec-unit">cups (<%= @recommendations[:water_oz] %> oz)</span>
+        </div>
+        <div class="rec-item">
+          <span class="rec-label">Protein</span>
+          <span class="rec-value"><%= @recommendations[:protein_g] %>g</span>
+        </div>
+        <div class="rec-item">
+          <span class="rec-label">Carbs</span>
+          <span class="rec-value"><%= @recommendations[:carbs_g] %>g</span>
+        </div>
+        <div class="rec-item">
+          <span class="rec-label">Fat</span>
+          <span class="rec-value"><%= @recommendations[:fat_g] %>g</span>
+        </div>
+      </div>
+
+      <div class="rec-details">
+        <p><strong>BMI:</strong> <%= @recommendations[:bmi] %> (<%= @recommendations[:bmi_category] %>)</p>
+        <p><strong>Resting burn (BMR):</strong> <%= number_with_delimiter(@recommendations[:resting_burn]) %> cal/day</p>
+        <p><strong>Activity burn:</strong> <%= number_with_delimiter(@recommendations[:activity_burn]) %> cal/day</p>
+        <p><strong>Total daily burn (TDEE):</strong> <%= number_with_delimiter(@recommendations[:tdee]) %> cal/day</p>
+      </div>
+    </section>
+  <% else %>
+    <div class="empty-state">
+      <p>Complete your profile to see personalized recommendations.</p>
+      <p>We need at least your weight, height, date of birth, and sex.</p>
+    </div>
+  <% end %>
+
+  <section class="profile-details-card">
+    <h3 class="section-title">Profile Details</h3>
+
+    <dl class="profile-dl">
+      <% if @user.display_name.present? %>
+        <dt>Name</dt>
+        <dd><%= @user.display_name %></dd>
+      <% end %>
+      <% if @user.date_of_birth.present? %>
+        <dt>Age</dt>
+        <dd><%= @user.age %> years old</dd>
+      <% end %>
+      <% if @user.sex.present? %>
+        <dt>Sex</dt>
+        <dd><%= @user.sex.capitalize %></dd>
+      <% end %>
+      <% if @user.weight.present? %>
+        <dt>Weight</dt>
+        <dd><%= @user.weight %> lbs</dd>
+      <% end %>
+      <% if @user.height.present? %>
+        <dt>Height</dt>
+        <dd><%= format_height(@user.height) %></dd>
+      <% end %>
+      <% if @user.blood_pressure_systolic.present? %>
+        <dt>Blood Pressure</dt>
+        <dd><%= @user.blood_pressure_systolic %>/<%= @user.blood_pressure_diastolic %> mmHg</dd>
+      <% end %>
+      <% if @user.activity_level.present? %>
+        <dt>Activity Level</dt>
+        <dd><%= @user.activity_level.humanize %></dd>
+      <% end %>
+      <% if @user.goal.present? %>
+        <dt>Goal</dt>
+        <dd><%= @user.goal.humanize %></dd>
+      <% end %>
+      <% if @user.health_concerns.present? %>
+        <dt>Health Concerns</dt>
+        <dd><%= @user.health_concerns %></dd>
+      <% end %>
+    </dl>
+  </section>
+
+  <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-primary btn-block" %>
+</div>

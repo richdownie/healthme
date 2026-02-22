@@ -299,6 +299,12 @@ select.form-input { appearance: auto; }
 .calorie-out .calorie-number { color: var(--color-success); }
 .calorie-positive .calorie-number { color: #f59e0b; }
 .calorie-negative .calorie-number { color: var(--color-success); }
+.calorie-breakdown {
+  display: block;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
 
 /* Activity calorie badge */
 .activity-calories {
@@ -430,4 +436,309 @@ select.form-input { appearance: auto; }
   flex: 1;
   height: 1px;
   background: var(--color-border);
+}
+
+/* Dropzone */
+.dropzone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+}
+.dropzone:hover, .dropzone-active {
+  border-color: var(--color-primary);
+  background: rgba(37, 99, 235, 0.04);
+}
+.dropzone-hint {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.dropzone-file-input {
+  width: 100%;
+}
+.dropzone-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.dropzone-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.dropzone-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.dropzone-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-danger);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Photo Grid (index cards) */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 6px;
+}
+.photo-grid img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Existing photos in form */
+.existing-photos {
+  margin-top: 10px;
+}
+.photo-grid-item {
+  position: relative;
+}
+.photo-grid-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Quick Add */
+.quick-add-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.quick-add-input {
+  width: 70px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+/* Calorie estimation */
+.calorie-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.calorie-input-row .form-input {
+  flex: 1;
+}
+.btn-estimate {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.calorie-status {
+  display: block;
+  font-size: 13px;
+  color: var(--color-primary);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Nav links */
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Profile Sections */
+.profile-section {
+  border: none;
+  padding: 0;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Recommendations Card */
+.recommendations-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.goal-badge {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.rec-item {
+  text-align: center;
+  padding: 10px 6px;
+  background: var(--color-bg);
+  border-radius: 8px;
+}
+.rec-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+.rec-value {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+.rec-unit {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.rec-details {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+.rec-details p {
+  margin-bottom: 4px;
+}
+
+/* Profile Details */
+.profile-details-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.profile-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  font-size: 14px;
+}
+.profile-dl dt {
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+.profile-dl dd {
+  color: var(--color-text);
+}
+
+/* Daily Targets on Index */
+.daily-targets {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.target-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.target-row:last-child {
+  margin-bottom: 0;
+}
+.target-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  min-width: 55px;
+}
+.target-progress {
+  flex: 1;
+  height: 8px;
+  background: var(--color-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.target-bar {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.target-bar-exercise {
+  background: var(--color-success);
+}
+.target-bar-water {
+  background: #3b82f6;
+}
+.target-numbers {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  min-width: 90px;
+  text-align: right;
+}
+
+/* Previous Day Tags */
+.prev-day-tags {
+  margin-bottom: 20px;
+}
+.prev-day-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tag-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.tag-btn:hover {
+  background: var(--color-bg);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }

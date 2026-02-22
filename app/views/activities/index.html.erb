@@ -10,16 +10,15 @@
       <h2><%= @date == Date.today ? "Today" : @date.strftime("%A") %></h2>
       <span class="date-full"><%= @date.strftime("%B %-d, %Y") %></span>
     </div>
-    <% if @date < Date.today %>
-      <%= link_to "Next →", activities_path(date: @date + 1.day), class: "btn btn-outline" %>
-    <% else %>
-      <span class="btn btn-outline disabled">Next →</span>
-    <% end %>
+    <%= link_to "Next →", activities_path(date: @date + 1.day), class: "btn btn-outline" %>
   </nav>
 
   <% if notice.present? %>
     <div class="flash-notice"><%= notice %></div>
   <% end %>
+
+  <% total_burned = @calories_burned + (@recommendations ? @recommendations[:daily_burn] : 0) %>
+  <% total_net = @calories_in - total_burned %>
 
   <div class="calorie-summary">
     <div class="calorie-card calorie-in">
@@ -29,17 +28,61 @@
     </div>
     <div class="calorie-card calorie-out">
       <span class="calorie-label">Burned</span>
-      <span class="calorie-number"><%= number_with_delimiter(@calories_burned) %></span>
+      <span class="calorie-number"><%= number_with_delimiter(total_burned) %></span>
       <span class="calorie-unit">cal</span>
+      <% if @recommendations %>
+        <span class="calorie-breakdown"><%= number_with_delimiter(@recommendations[:daily_burn]) %> base + <%= @calories_burned %> exercise</span>
+      <% end %>
     </div>
-    <div class="calorie-card calorie-net <%= @calories_net >= 0 ? 'calorie-positive' : 'calorie-negative' %>">
+    <div class="calorie-card calorie-net <%= total_net >= 0 ? 'calorie-positive' : 'calorie-negative' %>">
       <span class="calorie-label">Net</span>
-      <span class="calorie-number"><%= @calories_net >= 0 ? "+" : "" %><%= number_with_delimiter(@calories_net) %></span>
+      <span class="calorie-number"><%= total_net >= 0 ? "+" : "" %><%= number_with_delimiter(total_net) %></span>
       <span class="calorie-unit">cal</span>
     </div>
   </div>
 
+  <% if @recommendations %>
+    <div class="daily-targets">
+      <div class="target-row">
+        <span class="target-label">Calories</span>
+        <div class="target-progress">
+          <div class="target-bar" style="width: <%= [(@calories_in.to_f / @recommendations[:daily_calories] * 100), 100].min %>%"></div>
+        </div>
+        <span class="target-numbers"><%= @calories_in %> / <%= number_with_delimiter(@recommendations[:daily_calories]) %></span>
+      </div>
+      <div class="target-row">
+        <span class="target-label">Exercise</span>
+        <div class="target-progress">
+          <div class="target-bar target-bar-exercise" style="width: <%= @recommendations[:activity_burn] > 0 ? [(@calories_burned.to_f / @recommendations[:activity_burn] * 100), 100].min : 0 %>%"></div>
+        </div>
+        <span class="target-numbers"><%= @calories_burned %> / <%= number_with_delimiter(@recommendations[:activity_burn]) %> cal</span>
+      </div>
+      <% water_today = @activities.where(category: "water").sum(:value) %>
+      <div class="target-row">
+        <span class="target-label">Water</span>
+        <div class="target-progress">
+          <div class="target-bar target-bar-water" style="width: <%= @recommendations[:water_cups] > 0 ? [((water_today / @recommendations[:water_cups]) * 100), 100].min : 0 %>%"></div>
+        </div>
+        <span class="target-numbers"><%= water_today.round(1) %> / <%= @recommendations[:water_cups] %> cups</span>
+      </div>
+    </div>
+  <% end %>
+
   <%= link_to "＋ Log Activity", new_activity_path(date: @date), class: "btn btn-primary btn-block" %>
+
+  <% if @prev_activities.any? %>
+    <div class="prev-day-tags">
+      <h4 class="prev-day-title">Repeat from <%= (@date - 1.day) == Date.today ? "today" : (@date - 1.day).strftime("%A") %></h4>
+      <div class="tag-list">
+        <% @prev_activities.each do |prev| %>
+          <%= button_to activity_tag_label(prev),
+              duplicate_activity_path(prev, date: @date),
+              method: :post,
+              class: "tag-btn" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <% if @activities.any? %>
     <div class="activity-groups">
@@ -53,9 +96,11 @@
 
           <% activities.each do |activity| %>
             <div class="activity-card">
-              <% if activity.photo.attached? %>
-                <div class="activity-photo">
-                  <%= image_tag activity.photo, alt: activity.category %>
+              <% if activity.photos.any? %>
+                <div class="activity-photo <%= 'photo-grid' if activity.photos.count > 1 %>">
+                  <% activity.photos.each do |photo| %>
+                    <%= image_tag photo, alt: activity.category %>
+                  <% end %>
                 </div>
               <% end %>
 
@@ -75,6 +120,7 @@
               </div>
 
               <div class="activity-actions">
+                <%= button_to "Repeat", duplicate_activity_path(activity), method: :post, class: "btn btn-sm btn-outline" %>
                 <%= link_to "Edit", edit_activity_path(activity), class: "btn btn-sm" %>
                 <%= button_to "Delete", activity_path(activity), method: :delete,
                     class: "btn btn-sm btn-danger",

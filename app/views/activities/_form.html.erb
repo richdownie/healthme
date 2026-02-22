@@ -1,4 +1,4 @@
-<%= form_with(model: activity, class: "activity-form") do |f| %>
+<%= form_with(model: activity, class: "activity-form", data: { controller: "calorie-estimator category-fields", estimate_url: estimate_calories_activities_path }) do |f| %>
   <% if activity.errors.any? %>
     <div class="form-errors">
       <h4><%= pluralize(activity.errors.count, "error") %> prevented saving:</h4>
@@ -15,43 +15,63 @@
     <%= f.select :category,
         Activity::CATEGORIES.map { |c| [c.capitalize, c] },
         { prompt: "Select category..." },
-        class: "form-input" %>
+        class: "form-input", data: { calorie_estimator_target: "category", action: "change->category-fields#toggle" } %>
   </div>
 
-  <div class="form-row">
+  <div class="form-row" data-category-fields-target="amountRow">
     <div class="form-group form-group-half">
       <%= f.label :value, "Amount" %>
-      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input" %>
+      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input", data: { calorie_estimator_target: "value" } %>
     </div>
 
     <div class="form-group form-group-half">
       <%= f.label :unit %>
-      <%= f.text_field :unit, placeholder: "e.g. miles, reps, oz", class: "form-input" %>
+      <%= f.text_field :unit, placeholder: "e.g. miles, reps, oz", class: "form-input", data: { calorie_estimator_target: "unit" } %>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :calories, "Calories" %>
-    <%= f.number_field :calories, min: 0, placeholder: "e.g. 350", class: "form-input" %>
-    <span class="form-hint">Consumed for meals, burned for exercise</span>
+    <%= f.label :calories, "Calories Consumed", data: { category_fields_target: "calorieLabel" } %>
+    <div class="calorie-input-row">
+      <%= f.number_field :calories, min: 0, placeholder: "e.g. 350", class: "form-input", data: { calorie_estimator_target: "calories" } %>
+      <button type="button" class="btn btn-sm btn-outline btn-estimate" data-action="click->calorie-estimator#estimateClicked">
+        Estimate
+      </button>
+    </div>
+    <span class="calorie-status" style="display:none;" data-calorie-estimator-target="status"></span>
+    <span class="form-hint" data-category-fields-target="calorieHint">Estimated calories in this food or drink</span>
   </div>
 
   <div class="form-group">
     <%= f.label :notes %>
-    <%= f.text_area :notes, rows: 3, placeholder: "What did you do?", class: "form-input" %>
+    <%= f.text_area :notes, rows: 3, placeholder: "What did you do?", class: "form-input",
+        data: { calorie_estimator_target: "notes", action: "blur->calorie-estimator#notesChanged" } %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :photo, "Photo / Screenshot" %>
-    <%= f.file_field :photo, accept: "image/*", class: "form-input" %>
-    <% if activity.photo.attached? %>
-      <div class="photo-preview">
-        <%= image_tag activity.photo, alt: "Current photo" %>
+  <div class="form-group" data-controller="dropzone">
+    <%= f.label :photos, "Photos / Screenshots" %>
+    <div class="dropzone" data-dropzone-target="zone" data-action="dragover->dropzone#dragover dragleave->dropzone#dragleave drop->dropzone#drop">
+      <p class="dropzone-hint">Drag & drop images here, or</p>
+      <%= f.file_field :photos, multiple: true, accept: "image/*", class: "dropzone-file-input",
+          data: { dropzone_target: "input", calorie_estimator_target: "photo", action: "change->dropzone#fileChanged change->calorie-estimator#photoChanged" } %>
+    </div>
+    <div class="dropzone-previews" data-dropzone-target="preview"></div>
+    <% if activity.persisted? && activity.photos.any? %>
+      <div class="photo-grid existing-photos">
+        <% activity.photos.each do |photo| %>
+          <div class="photo-grid-item">
+            <%= image_tag photo, alt: activity.category %>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </div>
 
-  <%= f.hidden_field :performed_on %>
+  <div class="form-group">
+    <%= f.label :performed_on, "Date" %>
+    <%= f.date_field :performed_on, class: "form-input", max: Date.today.iso8601 %>
+  </div>
+  <input type="hidden" value="<%= form_authenticity_token %>" data-calorie-estimator-target="csrfToken">
 
   <div class="form-actions">
     <%= f.submit class: "btn btn-primary" %>

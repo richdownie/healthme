@@ -26,8 +26,12 @@
   <body>
     <% if signed_in? %>
       <nav class="app-nav">
-        <span class="nav-user"><%= current_user.short_npub %></span>
-        <%= button_to "Sign Out", session_path, method: :delete, class: "btn btn-sm btn-outline" %>
+        <span class="nav-user"><%= current_user.display_name.presence || current_user.short_npub %></span>
+        <div class="nav-links">
+          <%= link_to "Home", root_path, class: "btn btn-sm btn-outline" %>
+          <%= link_to "Profile", profile_path, class: "btn btn-sm btn-outline" %>
+          <%= button_to "Sign Out", session_path, method: :delete, class: "btn btn-sm btn-outline" %>
+        </div>
       </nav>
     <% end %>
 

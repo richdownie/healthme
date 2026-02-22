@@ -3,7 +3,13 @@ Rails.application.routes.draw do
     post :challenge, on: :collection
   end
 
-  resources :activities
+  resource :profile, only: [ :show, :edit, :update ]
+
+  resources :activities do
+    patch :quick_update, on: :member
+    post :duplicate, on: :member
+    post :estimate_calories, on: :collection
+  end
 
   get "up" => "rails/health#show", as: :rails_health_check
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_22_172311) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_22_194451) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -63,11 +63,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_172311) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "activity_level", default: "moderately_active"
+    t.integer "blood_pressure_diastolic"
+    t.integer "blood_pressure_systolic"
     t.datetime "created_at", null: false
+    t.date "date_of_birth"
     t.string "display_name"
+    t.string "goal", default: "maintain"
+    t.text "health_concerns"
+    t.decimal "height", precision: 4, scale: 1
     t.string "npub", null: false
     t.string "pubkey_hex", null: false
+    t.string "race_ethnicity"
+    t.string "sex"
     t.datetime "updated_at", null: false
+    t.decimal "weight", precision: 5, scale: 1
     t.index ["npub"], name: "index_users_on_npub", unique: true
     t.index ["pubkey_hex"], name: "index_users_on_pubkey_hex", unique: true
   end

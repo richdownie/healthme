@@ -1,15 +1,16 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  category: MyString
-  value: 9.99
-  unit: MyString
-  notes: MyText
+water_three_cups:
+  category: water
+  value: 3.0
+  unit: cups
+  notes: "I drank 3 cups of water"
   performed_on: 2026-02-22
+  user: alice
 
-two:
-  category: MyString
-  value: 9.99
-  unit: MyString
-  notes: MyText
+morning_meal:
+  category: food
+  value: 1.0
+  unit: serving
+  notes: "Oatmeal with berries"
+  calories: 350
   performed_on: 2026-02-22
+  user: alice
