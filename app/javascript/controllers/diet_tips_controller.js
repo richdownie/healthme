@@ -27,7 +27,9 @@ export default class extends Controller {
 
   #formatTips(text) {
     const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    const html = escaped.replace(/\n/g, "<br>")
+    const html = escaped
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br>")
     return `<div class="tips-content">${html}</div>`
   }
 }
