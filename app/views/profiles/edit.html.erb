@@ -116,6 +116,16 @@
         <%= f.label :prayer_goal_minutes, "Prayer / Meditation Goal (minutes per day)" %>
         <%= f.number_field :prayer_goal_minutes, min: 1, max: 480, step: 1, placeholder: "15", class: "form-input" %>
       </div>
+
+      <div class="form-group">
+        <%= f.label :fasting_start_hour, "Fasting Reminder Time" %>
+        <%= f.select :fasting_start_hour,
+            (16..23).map { |h| ["#{h > 12 ? h - 12 : h} #{h >= 12 ? 'PM' : 'AM'}", h] },
+            { include_blank: "Default (8 PM)" }, class: "form-input" %>
+        <span class="form-hint">
+          After this time, you'll see a fasting reminder and get a browser notification to stop eating. Only water and fluids allowed.
+        </span>
+      </div>
     </fieldset>
 
     <div class="form-actions">

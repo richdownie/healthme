@@ -17,6 +17,19 @@
     <div class="flash-notice"><%= notice %></div>
   <% end %>
 
+  <div data-controller="fasting-reminder"
+       data-fasting-reminder-start-hour-value="<%= current_user.effective_fasting_start_hour %>"
+       data-fasting-reminder-today-value="<%= @date == Date.today %>">
+    <div class="fasting-banner" data-fasting-reminder-target="banner"
+         style="<%= 'display:none' unless @date == Date.today && current_user.fasting_active? %>">
+      <span class="fasting-icon">🌙</span>
+      <div class="fasting-text">
+        <strong>Fasting time</strong> — Only water and non-caloric fluids from now.
+      </div>
+      <button class="btn btn-sm btn-outline" data-action="fasting-reminder#enableNotifications" style="margin-left:auto; white-space:nowrap;">Enable Alerts</button>
+    </div>
+  </div>
+
   <% total_burned = @calories_burned + (@recommendations ? @recommendations[:daily_burn] : 0) %>
   <% total_net = @calories_in - total_burned %>
 

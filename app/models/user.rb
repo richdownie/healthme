@@ -17,6 +17,7 @@ class User < ApplicationRecord
   validates :blood_pressure_systolic, numericality: { in: 60..250 }, allow_nil: true
   validates :blood_pressure_diastolic, numericality: { in: 30..150 }, allow_nil: true
   validates :timezone, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }, allow_nil: true
+  validates :fasting_start_hour, numericality: { only_integer: true, in: 0..23 }, allow_nil: true
   validate :blood_pressure_pair
 
   before_validation :derive_npub_from_pubkey, if: -> { pubkey_hex.present? && npub.blank? }
@@ -42,6 +43,14 @@ class User < ApplicationRecord
     oz = weight * 0.5
     oz *= 1.2 if activity_level.in?(%w[very_active extra_active])
     (oz / 8.0).round(1)
+  end
+
+  def effective_fasting_start_hour
+    fasting_start_hour || 20
+  end
+
+  def fasting_active?
+    Time.current.hour >= effective_fasting_start_hour
   end
 
   def effective_water_goal

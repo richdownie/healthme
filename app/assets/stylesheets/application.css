@@ -120,6 +120,21 @@ body {
   margin-bottom: 16px;
   font-size: 14px;
 }
+.fasting-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.fasting-icon { font-size: 20px; flex-shrink: 0; }
+.fasting-text strong { display: block; font-weight: 700; }
 
 /* Activity Groups */
 .sort-toggle-bar {
