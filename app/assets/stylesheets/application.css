@@ -695,11 +695,50 @@ select.form-input { appearance: auto; }
   border-radius: 4px;
   transition: width 0.3s;
 }
-.target-bar-exercise {
-  background: var(--color-success);
+/* Stacked exercise bar */
+.target-stacked {
+  display: flex;
+  overflow: hidden;
 }
+.target-segment {
+  height: 100%;
+  transition: width 0.3s;
+}
+.segment-walk { background: #22c55e; }
+.segment-run { background: #f59e0b; }
+.segment-weights { background: #ef4444; }
+.segment-yoga { background: #a855f7; }
+
+.exercise-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  padding-left: 65px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.legend-walk { background: #22c55e; }
+.legend-run { background: #f59e0b; }
+.legend-weights { background: #ef4444; }
+.legend-yoga { background: #a855f7; }
 .target-bar-water {
   background: #3b82f6;
+}
+.target-bar-prayer {
+  background: #a855f7;
 }
 .target-numbers {
   font-size: 12px;

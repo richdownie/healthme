@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-const BURN_CATEGORIES = ["walk", "run", "pushups", "exercise"]
+const BURN_CATEGORIES = ["walk", "run", "weights", "yoga"]
 
 export default class extends Controller {
   static targets = ["amountRow", "calorieLabel", "calorieHint"]

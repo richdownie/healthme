@@ -13,7 +13,7 @@
   <div class="form-group">
     <%= f.label :category %>
     <%= f.select :category,
-        Activity::CATEGORIES.map { |c| [c.capitalize, c] },
+        Activity::CATEGORIES.map { |c| [category_label(c), c] },
         { prompt: "Select category..." },
         class: "form-input", data: { calorie_estimator_target: "category", action: "change->category-fields#toggle" } %>
   </div>

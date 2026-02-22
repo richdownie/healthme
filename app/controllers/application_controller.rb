@@ -8,4 +8,12 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   before_action :require_authentication
+  around_action :set_user_timezone
+
+  private
+
+  def set_user_timezone(&block)
+    tz = current_user&.timezone.presence || "Eastern Time (US & Canada)"
+    Time.use_zone(tz, &block)
+  end
 end

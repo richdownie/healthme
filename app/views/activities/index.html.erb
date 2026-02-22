@@ -50,20 +50,48 @@
         </div>
         <span class="target-numbers"><%= @calories_in %> / <%= number_with_delimiter(@recommendations[:daily_calories]) %></span>
       </div>
+      <% exercise_goal = @recommendations[:activity_burn].to_f %>
+      <% walk_cal = @activities.where(category: "walk").sum(:calories) %>
+      <% run_cal = @activities.where(category: "run").sum(:calories) %>
+      <% weights_cal = @activities.where(category: "weights").sum(:calories) %>
+      <% yoga_cal = @activities.where(category: "yoga").sum(:calories) %>
       <div class="target-row">
         <span class="target-label">Exercise</span>
-        <div class="target-progress">
-          <div class="target-bar target-bar-exercise" style="width: <%= @recommendations[:activity_burn] > 0 ? [(@calories_burned.to_f / @recommendations[:activity_burn] * 100), 100].min : 0 %>%"></div>
+        <div class="target-progress target-stacked">
+          <% if exercise_goal > 0 %>
+            <div class="target-segment segment-walk" style="width: <%= [(walk_cal / exercise_goal * 100), 100].min %>%"></div>
+            <div class="target-segment segment-run" style="width: <%= [(run_cal / exercise_goal * 100), 100].min %>%"></div>
+            <div class="target-segment segment-weights" style="width: <%= [(weights_cal / exercise_goal * 100), 100].min %>%"></div>
+            <div class="target-segment segment-yoga" style="width: <%= [(yoga_cal / exercise_goal * 100), 100].min %>%"></div>
+          <% end %>
         </div>
         <span class="target-numbers"><%= @calories_burned %> / <%= number_with_delimiter(@recommendations[:activity_burn]) %> cal</span>
       </div>
+      <% if @calories_burned > 0 %>
+        <div class="exercise-legend">
+          <% if walk_cal > 0 %><span class="legend-item"><span class="legend-dot legend-walk"></span>Walk <%= walk_cal %></span><% end %>
+          <% if run_cal > 0 %><span class="legend-item"><span class="legend-dot legend-run"></span>Run <%= run_cal %></span><% end %>
+          <% if weights_cal > 0 %><span class="legend-item"><span class="legend-dot legend-weights"></span>Weights <%= weights_cal %></span><% end %>
+          <% if yoga_cal > 0 %><span class="legend-item"><span class="legend-dot legend-yoga"></span>Yoga <%= yoga_cal %></span><% end %>
+        </div>
+      <% end %>
       <% water_today = @activities.where(category: "water").sum(:value) %>
+      <% water_goal = current_user.effective_water_goal %>
       <div class="target-row">
         <span class="target-label">Water</span>
         <div class="target-progress">
-          <div class="target-bar target-bar-water" style="width: <%= @recommendations[:water_cups] > 0 ? [((water_today / @recommendations[:water_cups]) * 100), 100].min : 0 %>%"></div>
+          <div class="target-bar target-bar-water" style="width: <%= water_goal > 0 ? [((water_today / water_goal) * 100), 100].min : 0 %>%"></div>
         </div>
-        <span class="target-numbers"><%= water_today.round(1) %> / <%= @recommendations[:water_cups] %> cups</span>
+        <span class="target-numbers"><%= water_today.round(1) %> / <%= water_goal %> cups</span>
+      </div>
+      <% prayer_today = @activities.where(category: "prayer_meditation").sum(:value) %>
+      <% prayer_goal = current_user.prayer_goal_minutes || 15 %>
+      <div class="target-row">
+        <span class="target-label">Prayer</span>
+        <div class="target-progress">
+          <div class="target-bar target-bar-prayer" style="width: <%= prayer_goal > 0 ? [((prayer_today / prayer_goal.to_f) * 100), 100].min : 0 %>%"></div>
+        </div>
+        <span class="target-numbers"><%= prayer_today.round(0) %> / <%= prayer_goal %> min</span>
       </div>
     </div>
   <% end %>
@@ -90,7 +118,7 @@
         <section class="category-group">
           <h3 class="category-title">
             <span class="category-icon"><%= category_icon(category) %></span>
-            <%= category.capitalize %>
+            <%= category_label(category) %>
             <span class="category-count">(<%= activities.size %>)</span>
           </h3>
 
@@ -116,7 +144,7 @@
                 <% if activity.notes.present? %>
                   <p class="activity-notes"><%= activity.notes %></p>
                 <% end %>
-                <span class="activity-time"><%= activity.created_at.strftime("%-I:%M %p") %></span>
+                <span class="activity-time"><%= activity.created_at.in_time_zone.strftime("%-I:%M %p") %></span>
               </div>
 
               <div class="activity-actions">

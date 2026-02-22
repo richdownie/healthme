@@ -3,16 +3,25 @@ module ActivitiesHelper
     "food" => "🍽️",
     "walk" => "🚶",
     "run" => "🏃",
-    "pushups" => "💪",
-    "exercise" => "🏋️",
+    "weights" => "🏋️",
+    "yoga" => "🧘",
     "sleep" => "😴",
     "water" => "💧",
-    "weight" => "⚖️",
+    "prayer_meditation" => "🙏",
     "other" => "📝"
+  }.freeze
+
+  CATEGORY_LABELS = {
+    "weights" => "Weight Training",
+    "prayer_meditation" => "Prayer / Meditation"
   }.freeze
 
   def category_icon(category)
     CATEGORY_ICONS[category] || "📝"
+  end
+
+  def category_label(category)
+    CATEGORY_LABELS[category] || category.capitalize
   end
 
   def activity_tag_label(activity)
@@ -20,9 +29,9 @@ module ActivitiesHelper
     if activity.notes.present?
       parts << activity.notes.truncate(30)
     elsif activity.display_value
-      parts << "#{activity.category.capitalize} #{activity.display_value}"
+      parts << "#{category_label(activity.category)} #{activity.display_value}"
     else
-      parts << activity.category.capitalize
+      parts << category_label(activity.category)
     end
     if activity.calories.present? && activity.calories > 0
       parts << "(#{activity.calories} cal)"

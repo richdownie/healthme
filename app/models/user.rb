@@ -16,6 +16,7 @@ class User < ApplicationRecord
   validates :goal, inclusion: { in: GOALS }, allow_nil: true
   validates :blood_pressure_systolic, numericality: { in: 60..250 }, allow_nil: true
   validates :blood_pressure_diastolic, numericality: { in: 30..150 }, allow_nil: true
+  validates :timezone, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }, allow_nil: true
   validate :blood_pressure_pair
 
   before_validation :derive_npub_from_pubkey, if: -> { pubkey_hex.present? && npub.blank? }
@@ -34,6 +35,17 @@ class User < ApplicationRecord
     age = today.year - date_of_birth.year
     age -= 1 if today < date_of_birth + age.years
     age
+  end
+
+  def recommended_water_cups
+    return nil unless weight.present?
+    oz = weight * 0.5
+    oz *= 1.2 if activity_level.in?(%w[very_active extra_active])
+    (oz / 8.0).round(1)
+  end
+
+  def effective_water_goal
+    water_goal_cups.presence || recommended_water_cups || 8
   end
 
   def recommendations

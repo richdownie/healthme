@@ -25,8 +25,8 @@
         </div>
         <div class="rec-item">
           <span class="rec-label">Water</span>
-          <span class="rec-value"><%= @recommendations[:water_cups] %></span>
-          <span class="rec-unit">cups (<%= @recommendations[:water_oz] %> oz)</span>
+          <span class="rec-value"><%= @user.effective_water_goal %></span>
+          <span class="rec-unit">cups/day</span>
         </div>
         <div class="rec-item">
           <span class="rec-label">Protein</span>

@@ -36,6 +36,11 @@
         <%= f.label :race_ethnicity, "Race / Ethnicity (optional)" %>
         <%= f.text_field :race_ethnicity, placeholder: "Optional", class: "form-input" %>
       </div>
+
+      <div class="form-group">
+        <%= f.label :timezone, "Timezone" %>
+        <%= f.time_zone_select :timezone, ActiveSupport::TimeZone.us_zones, { default: "Eastern Time (US & Canada)" }, class: "form-input" %>
+      </div>
     </fieldset>
 
     <fieldset class="profile-section">
@@ -92,6 +97,24 @@
         <%= f.select :goal,
             User::GOALS.map { |g| [g.humanize, g] },
             { include_blank: "Select..." }, class: "form-input" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :water_goal_cups, "Daily Water Goal (cups)" %>
+        <%= f.number_field :water_goal_cups, min: 1, max: 50, step: 0.1,
+            placeholder: @user.recommended_water_cups || 8,
+            class: "form-input" %>
+        <% if @user.recommended_water_cups %>
+          <span class="form-hint">
+            Suggested: <%= @user.recommended_water_cups %> cups — based on half your body weight (<%= @user.weight.to_i %> lbs) in ounces (<%= (@user.weight * 0.5).round(0) %> oz), converted to cups.
+            Leave blank to use this calculated value.
+          </span>
+        <% end %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :prayer_goal_minutes, "Prayer / Meditation Goal (minutes per day)" %>
+        <%= f.number_field :prayer_goal_minutes, min: 1, max: 480, step: 1, placeholder: "15", class: "form-input" %>
       </div>
     </fieldset>
 
