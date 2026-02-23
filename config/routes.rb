@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 
   resource :profile, only: [ :show, :edit, :update ]
 
+  resource :metrics, only: [ :show ] do
+    get :data, on: :member
+  end
+
   resources :activities do
     patch :quick_update, on: :member
     post :duplicate, on: :member

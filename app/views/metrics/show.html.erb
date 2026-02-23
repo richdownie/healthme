@@ -1,0 +1,60 @@
+<div class="container" data-controller="metrics-charts"
+     data-metrics-charts-url-value="<%= data_metrics_path %>"
+     data-metrics-charts-start-value="<%= @start_date.iso8601 %>"
+     data-metrics-charts-end-value="<%= @end_date.iso8601 %>"
+     data-metrics-charts-water-goal-value="<%= current_user.effective_water_goal %>"
+     data-metrics-charts-prayer-goal-value="<%= current_user.prayer_goal_minutes || 15 %>"
+     data-metrics-charts-calorie-goal-value="<%= @recommendations ? @recommendations[:daily_calories] : 0 %>">
+
+  <header class="app-header">
+    <h1>Metrics</h1>
+    <p class="tagline">Your health trends over time</p>
+  </header>
+
+  <div class="date-range-picker">
+    <div class="date-range-field">
+      <label>From</label>
+      <input type="date" value="<%= @start_date.iso8601 %>" data-metrics-charts-target="startDate" max="<%= Time.zone.today.iso8601 %>">
+    </div>
+    <div class="date-range-field">
+      <label>To</label>
+      <input type="date" value="<%= @end_date.iso8601 %>" data-metrics-charts-target="endDate" max="<%= Time.zone.today.iso8601 %>">
+    </div>
+    <button class="btn btn-primary btn-sm" data-action="click->metrics-charts#refresh">Update</button>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Calories</h3>
+    <canvas data-metrics-charts-target="caloriesChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Macronutrients</h3>
+    <canvas data-metrics-charts-target="macrosChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Exercise</h3>
+    <canvas data-metrics-charts-target="exerciseChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Blood Pressure</h3>
+    <canvas data-metrics-charts-target="bpChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Water Intake</h3>
+    <canvas data-metrics-charts-target="waterChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Sleep</h3>
+    <canvas data-metrics-charts-target="sleepChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Prayer / Meditation</h3>
+    <canvas data-metrics-charts-target="prayerChart"></canvas>
+  </div>
+</div>
