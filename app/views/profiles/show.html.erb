@@ -99,5 +99,20 @@
     </dl>
   </section>
 
+  <%# App Security section — only visible inside Capacitor native shell %>
+  <section class="profile-details-card biometric-section" data-biometric-lock-target="toggleSection" style="display: none;">
+    <h3 class="section-title">App Security</h3>
+    <div class="biometric-toggle-row">
+      <div>
+        <strong>Face ID / Touch ID Lock</strong>
+        <p class="biometric-hint">Require biometric authentication when opening the app</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" data-biometric-lock-target="toggle" data-action="biometric-lock#toggleBiometric">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </section>
+
   <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-primary btn-block" %>
 </div>

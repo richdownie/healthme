@@ -2,7 +2,7 @@
 <html>
   <head>
     <title><%= content_for(:title) || "Healthme" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Healthme">
     <meta name="mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body data-controller="biometric-lock">
     <% if signed_in? %>
       <nav class="app-nav">
         <span class="nav-user"><%= current_user.display_name.presence || current_user.short_npub %></span>
@@ -37,5 +37,17 @@
     <main>
       <%= yield %>
     </main>
+
+    <%# Biometric lock overlay — shown by Stimulus on native when Face ID/Touch ID is enabled %>
+    <div class="biometric-overlay" data-biometric-lock-target="overlay" style="display: none;">
+      <div class="biometric-overlay-content">
+        <div class="biometric-icon">🍎</div>
+        <h2>HealthMe is Locked</h2>
+        <p>Authenticate to continue</p>
+        <button class="btn btn-primary" data-biometric-lock-target="retryButton" data-action="biometric-lock#retry" style="display: none;">
+          Try Again
+        </button>
+      </div>
+    </div>
   </body>
 </html>
