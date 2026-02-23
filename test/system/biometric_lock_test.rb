@@ -52,6 +52,34 @@ class BiometricLockTest < ApplicationSystemTestCase
     assert_biometric_toggle_unchecked
   end
 
+  test "disabling Face ID removes stored nsec so user must sign in manually" do
+    system_sign_in(@user)
+    visit profile_path
+    assert_selector "h1", text: "Your Profile"
+
+    # Start with Face ID enabled and a stored nsec
+    inject_capacitor_mock(biometric_enabled: true, stored_nsec: "abcd1234")
+    trigger_controller_methods
+
+    assert_biometric_toggle_checked
+
+    # Toggle Face ID OFF via the controller
+    page.execute_script(<<~JS)
+      var ctrl = window.Stimulus.getControllerForElementAndIdentifier(document.body, 'biometric-lock');
+      ctrl.toggleTarget.checked = false;
+      ctrl.toggleBiometric();
+    JS
+    sleep 0.5
+
+    # Verify biometric_enabled is now "false"
+    biometric_val = page.evaluate_script("window._mockStorage['biometric_enabled']")
+    assert_equal "false", biometric_val, "biometric_enabled should be 'false' after toggling off"
+
+    # Verify stored_nsec was removed
+    nsec_exists = page.evaluate_script("window._mockStorage.hasOwnProperty('stored_nsec')")
+    assert_not nsec_exists, "stored_nsec should be removed when Face ID is disabled"
+  end
+
   private
 
   def system_sign_in(user)
@@ -72,9 +100,10 @@ class BiometricLockTest < ApplicationSystemTestCase
     assert_current_path root_path, wait: 5
   end
 
-  def inject_capacitor_mock(biometric_enabled: false)
+  def inject_capacitor_mock(biometric_enabled: false, stored_nsec: nil)
     page.execute_script(<<~JS)
       window._mockStorage = { biometric_enabled: "#{biometric_enabled}" };
+      #{"window._mockStorage['stored_nsec'] = '#{stored_nsec}';" if stored_nsec}
       window._biometricUnlocked = true;
       window.Capacitor = {
         isNativePlatform: function() { return true; },
@@ -87,6 +116,10 @@ class BiometricLockTest < ApplicationSystemTestCase
             },
             set: function(opts) {
               window._mockStorage[opts.key] = opts.value;
+              return Promise.resolve();
+            },
+            remove: function(opts) {
+              delete window._mockStorage[opts.key];
               return Promise.resolve();
             }
           },
