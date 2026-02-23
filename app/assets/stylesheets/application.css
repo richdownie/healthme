@@ -841,6 +841,31 @@ select.form-input { appearance: auto; }
   font-size: 11px;
   color: var(--color-text-muted);
 }
+.rec-progress {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.rec-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.rec-bar-burn { background: #16a34a; }
+.rec-bar-cal { background: #2563eb; }
+.rec-bar-water { background: #3b82f6; }
+.rec-bar-protein { background: #8b5cf6; }
+.rec-bar-carbs { background: #f59e0b; }
+.rec-bar-fat { background: #ec4899; }
+.rec-actual {
+  display: block;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+}
 .rec-details {
   font-size: 14px;
   color: var(--color-text-muted);

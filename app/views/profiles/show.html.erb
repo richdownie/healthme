@@ -17,28 +17,46 @@
           <span class="rec-label">Daily Burn</span>
           <span class="rec-value"><%= number_with_delimiter(@recommendations[:daily_burn]) %></span>
           <span class="rec-unit">cal/day</span>
+          <% burn_pct = @recommendations[:daily_burn] > 0 ? [(@today[:calories_burned].to_f / @recommendations[:daily_burn] * 100), 100].min : 0 %>
+          <div class="rec-progress"><div class="rec-bar rec-bar-burn" style="width: <%= burn_pct %>%"></div></div>
+          <span class="rec-actual"><%= @today[:calories_burned] %> burned</span>
         </div>
         <div class="rec-item">
           <span class="rec-label">Calorie Target</span>
           <span class="rec-value"><%= number_with_delimiter(@recommendations[:daily_calories]) %></span>
           <span class="rec-unit">cal/day</span>
+          <% cal_pct = @recommendations[:daily_calories] > 0 ? [(@today[:calories_in].to_f / @recommendations[:daily_calories] * 100), 100].min : 0 %>
+          <div class="rec-progress"><div class="rec-bar rec-bar-cal" style="width: <%= cal_pct %>%"></div></div>
+          <span class="rec-actual"><%= @today[:calories_in] %> eaten</span>
         </div>
         <div class="rec-item">
           <span class="rec-label">Water</span>
           <span class="rec-value"><%= @user.effective_water_goal %></span>
           <span class="rec-unit">cups/day</span>
+          <% water_goal = @user.effective_water_goal.to_f; water_pct = water_goal > 0 ? [(@today[:water] / water_goal * 100), 100].min : 0 %>
+          <div class="rec-progress"><div class="rec-bar rec-bar-water" style="width: <%= water_pct %>%"></div></div>
+          <span class="rec-actual"><%= @today[:water] %> cups</span>
         </div>
         <div class="rec-item">
           <span class="rec-label">Protein</span>
           <span class="rec-value"><%= @recommendations[:protein_g] %>g</span>
+          <% pro_pct = @recommendations[:protein_g] > 0 ? [(@today[:protein_g] / @recommendations[:protein_g].to_f * 100), 100].min : 0 %>
+          <div class="rec-progress"><div class="rec-bar rec-bar-protein" style="width: <%= pro_pct %>%"></div></div>
+          <span class="rec-actual"><%= @today[:protein_g] %>g today</span>
         </div>
         <div class="rec-item">
           <span class="rec-label">Carbs</span>
           <span class="rec-value"><%= @recommendations[:carbs_g] %>g</span>
+          <% carbs_pct = @recommendations[:carbs_g] > 0 ? [(@today[:carbs_g] / @recommendations[:carbs_g].to_f * 100), 100].min : 0 %>
+          <div class="rec-progress"><div class="rec-bar rec-bar-carbs" style="width: <%= carbs_pct %>%"></div></div>
+          <span class="rec-actual"><%= @today[:carbs_g] %>g today</span>
         </div>
         <div class="rec-item">
           <span class="rec-label">Fat</span>
           <span class="rec-value"><%= @recommendations[:fat_g] %>g</span>
+          <% fat_pct = @recommendations[:fat_g] > 0 ? [(@today[:fat_g] / @recommendations[:fat_g].to_f * 100), 100].min : 0 %>
+          <div class="rec-progress"><div class="rec-bar rec-bar-fat" style="width: <%= fat_pct %>%"></div></div>
+          <span class="rec-actual"><%= @today[:fat_g] %>g today</span>
         </div>
       </div>
 
