@@ -11,7 +11,7 @@
     <% if activity.display_value %>
       <span class="activity-value"><%= activity.display_value %></span>
     <% end %>
-    <% if activity.calories.present? && activity.calories > 0 %>
+    <% if activity.calories.present? && activity.calories > 0 && activity.category != "medication" %>
       <span class="activity-calories <%= activity.intake? ? 'cal-in' : 'cal-out' %>">
         <%= activity.intake? ? "+" : "-" %><%= activity.calories %> cal
       </span>

@@ -164,9 +164,11 @@
               <span class="category-icon"><%= category_icon(category) %></span>
               <%= category_label(category) %>
               <span class="category-count">(<%= activities.size %>)</span>
-              <% cat_cal = activities.sum { |a| a.calories.to_i } %>
-              <% if cat_cal > 0 %>
-                <span class="category-cal"><%= activities.first&.intake? ? "+" : "-" %><%= cat_cal %> cal</span>
+              <% unless category.in?(%w[medication sleep water prayer_meditation]) %>
+                <% cat_cal = activities.sum { |a| a.calories.to_i } %>
+                <% if cat_cal > 0 %>
+                  <span class="category-cal"><%= activities.first&.intake? ? "+" : "-" %><%= cat_cal %> cal</span>
+                <% end %>
               <% end %>
               <span class="category-chevron"></span>
             </summary>
