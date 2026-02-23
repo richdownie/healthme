@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     post :duplicate, on: :member
     post :estimate_calories, on: :collection
     post :analyze_bp, on: :collection
+    post :analyze_medication, on: :collection
     get :diet_tips, on: :collection
   end
 

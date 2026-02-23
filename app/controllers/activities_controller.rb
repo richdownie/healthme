@@ -85,6 +85,25 @@ class ActivitiesController < ApplicationController
     end
   end
 
+  def analyze_medication
+    date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
+    medications_today = current_user.activities.on_date(date).where(category: "medication").to_a
+
+    result = MedicationAnalyzer.analyze(
+      name: params[:name],
+      dose: params[:dose],
+      unit: params[:unit],
+      user: current_user,
+      medications_today: medications_today
+    )
+
+    if result
+      render json: result
+    else
+      render json: { error: "Could not analyze medication" }, status: :unprocessable_entity
+    end
+  end
+
   def quick_update
     add = params[:add_value].to_f
     @activity.update!(value: (@activity.value || 0) + add)

@@ -112,6 +112,17 @@ const CATEGORY_CONFIG = {
     showPhotos: false,
     showAmount: true,
   },
+  medication: {
+    valueLabel: "Dose",
+    valuePlaceholder: "e.g. 1000",
+    unitMode: "select",
+    unitOptions: ["mg", "g", "mcg", "IU", "capsules", "tablets", "softgels", "drops", "ml"],
+    showCalories: false,
+    notesPlaceholder: "e.g. Fish Oil, Creatine, Vitamin D...",
+    showPhotos: true,
+    showAmount: true,
+    showMedAnalyze: true,
+  },
   other: {
     valueLabel: "Amount",
     valuePlaceholder: "e.g. 3.5",
@@ -138,6 +149,7 @@ export default class extends Controller {
     "diastolicGroup",
     "diastolicField",
     "bpAnalyzeRow",
+    "medAnalyzeRow",
     "calorieRow",
     "calorieLabel",
     "calorieHint",
@@ -181,6 +193,9 @@ export default class extends Controller {
     }
     if (this.hasBpAnalyzeRowTarget) {
       this.bpAnalyzeRowTarget.style.display = isBP ? "" : "none"
+    }
+    if (this.hasMedAnalyzeRowTarget) {
+      this.medAnalyzeRowTarget.style.display = config.showMedAnalyze ? "" : "none"
     }
 
     // Unit: select vs fixed vs free text

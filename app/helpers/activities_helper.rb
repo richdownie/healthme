@@ -10,13 +10,15 @@ module ActivitiesHelper
     "water" => "💧",
     "prayer_meditation" => "🙏",
     "blood_pressure" => "❤️",
+    "medication" => "💊",
     "other" => "📝"
   }.freeze
 
   CATEGORY_LABELS = {
     "weights" => "Weight Training",
     "prayer_meditation" => "Prayer / Meditation",
-    "blood_pressure" => "Blood Pressure"
+    "blood_pressure" => "Blood Pressure",
+    "medication" => "Medication / Supplement"
   }.freeze
 
   def category_icon(category)

@@ -3,7 +3,7 @@ import "chart.js/auto"
 
 export default class extends Controller {
   static targets = ["startDate", "endDate", "caloriesChart", "macrosChart", "exerciseChart",
-                     "bpChart", "waterChart", "sleepChart", "prayerChart"]
+                     "bpChart", "waterChart", "sleepChart", "prayerChart", "medicationChart"]
   static values = { url: String, start: String, end: String, waterGoal: Number, prayerGoal: Number, calorieGoal: Number }
 
   #charts = {}
@@ -47,6 +47,7 @@ export default class extends Controller {
     this.#renderWater(labels, data)
     this.#renderSleep(labels, data)
     this.#renderPrayer(labels, data)
+    this.#renderMedication(labels, data)
   }
 
   #renderCalories(labels, data) {
@@ -167,6 +168,19 @@ export default class extends Controller {
         ]
       },
       options: this.#barOpts("min")
+    })
+  }
+
+  #renderMedication(labels, data) {
+    this.#chart("medication", this.medicationChartTarget, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          { label: "Medications / Supplements", data: data.medication_count, backgroundColor: "#14b8a6" }
+        ]
+      },
+      options: this.#barOpts("")
     })
   }
 

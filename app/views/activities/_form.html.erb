@@ -1,4 +1,4 @@
-<%= form_with(model: activity, class: "activity-form", data: { controller: "calorie-estimator category-fields fasting-guard bp-analyzer", estimate_url: estimate_calories_activities_path, bp_analyzer_url: analyze_bp_activities_path, fasting_guard_start_hour_value: current_user.effective_fasting_start_hour }) do |f| %>
+<%= form_with(model: activity, class: "activity-form", data: { controller: "calorie-estimator category-fields fasting-guard bp-analyzer med-analyzer", estimate_url: estimate_calories_activities_path, bp_analyzer_url: analyze_bp_activities_path, med_analyzer_url: analyze_medication_activities_path, fasting_guard_start_hour_value: current_user.effective_fasting_start_hour }) do |f| %>
   <% if activity.errors.any? %>
     <div class="form-errors">
       <h4><%= pluralize(activity.errors.count, "error") %> prevented saving:</h4>
@@ -21,13 +21,13 @@
   <div class="form-row" data-category-fields-target="amountRow">
     <div class="form-group form-group-half">
       <%= f.label :value, "Amount", data: { category_fields_target: "valueLabel" } %>
-      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input", data: { calorie_estimator_target: "value", bp_analyzer_target: "systolic", category_fields_target: "valueField", action: "input->category-fields#valueChanged input->calorie-estimator#valueChanged" } %>
+      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input", data: { calorie_estimator_target: "value", bp_analyzer_target: "systolic", med_analyzer_target: "value", category_fields_target: "valueField", action: "input->category-fields#valueChanged input->calorie-estimator#valueChanged" } %>
     </div>
 
     <div class="form-group form-group-half" data-category-fields-target="unitGroup">
       <%= f.label :unit %>
       <div class="unit-combo">
-        <%= f.select :unit, options_for_select([], activity.unit), {}, class: "form-input", data: { category_fields_target: "unitSelect" } %>
+        <%= f.select :unit, options_for_select([], activity.unit), {}, class: "form-input", data: { category_fields_target: "unitSelect", med_analyzer_target: "unit" } %>
         <%= f.text_field :unit, placeholder: "e.g. miles, reps, oz", class: "form-input", name: "", value: activity.unit, data: { category_fields_target: "unitText" } %>
       </div>
     </div>
@@ -42,6 +42,13 @@
       Analyze
     </button>
     <div class="bp-analysis-result" style="display:none;" data-bp-analyzer-target="result"></div>
+  </div>
+
+  <div class="form-group" data-category-fields-target="medAnalyzeRow" style="display:none;">
+    <button type="button" class="btn btn-sm btn-outline" data-med-analyzer-target="btn" data-action="click->med-analyzer#analyze">
+      Analyze
+    </button>
+    <div class="bp-analysis-result" style="display:none;" data-med-analyzer-target="result"></div>
   </div>
 
   <div class="form-group" data-category-fields-target="calorieRow">
@@ -60,7 +67,7 @@
   <div class="form-group">
     <%= f.label :notes %>
     <%= f.text_area :notes, rows: 3, placeholder: "What did you do?", class: "form-input",
-        data: { calorie_estimator_target: "notes", category_fields_target: "notesField", action: "blur->calorie-estimator#notesChanged" } %>
+        data: { calorie_estimator_target: "notes", category_fields_target: "notesField", med_analyzer_target: "notes", action: "blur->calorie-estimator#notesChanged" } %>
   </div>
 
   <div class="form-group" data-category-fields-target="photosRow" data-controller="dropzone">
@@ -92,7 +99,7 @@
     <%= f.label :performed_on, "Date" %>
     <%= f.date_field :performed_on, class: "form-input", max: Time.zone.today.iso8601 %>
   </div>
-  <input type="hidden" value="<%= form_authenticity_token %>" data-calorie-estimator-target="csrfToken" data-bp-analyzer-target="csrfToken">
+  <input type="hidden" value="<%= form_authenticity_token %>" data-calorie-estimator-target="csrfToken" data-bp-analyzer-target="csrfToken" data-med-analyzer-target="csrfToken">
 
   <div class="form-actions">
     <%= f.submit class: "btn btn-primary", data: { action: "click->fasting-guard#checkSubmit" } %>
