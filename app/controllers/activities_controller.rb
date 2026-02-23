@@ -67,6 +67,24 @@ class ActivitiesController < ApplicationController
     end
   end
 
+  def analyze_bp
+    date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
+    activities_today = current_user.activities.on_date(date).to_a
+
+    result = BpAnalyzer.analyze(
+      systolic: params[:systolic],
+      diastolic: params[:diastolic],
+      user: current_user,
+      activities_today: activities_today
+    )
+
+    if result
+      render json: result
+    else
+      render json: { error: "Could not analyze reading" }, status: :unprocessable_entity
+    end
+  end
+
   def quick_update
     add = params[:add_value].to_f
     @activity.update!(value: (@activity.value || 0) + add)

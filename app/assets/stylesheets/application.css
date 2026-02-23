@@ -463,6 +463,20 @@ select.form-input { appearance: auto; }
   color: var(--color-text-muted);
 }
 
+.bp-analysis-result {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.bp-classification {
+  font-size: 14px;
+}
+.bp-analysis-text {
+  color: var(--color-text);
+}
+
 /* Auth styles */
 .auth-card {
   background: var(--color-surface);

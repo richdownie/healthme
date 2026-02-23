@@ -1,5 +1,5 @@
 class Activity < ApplicationRecord
-  CATEGORIES = %w[food coffee walk run weights yoga sleep water prayer_meditation other].freeze
+  CATEGORIES = %w[food coffee walk run weights yoga sleep water prayer_meditation blood_pressure other].freeze
 
   belongs_to :user, optional: true
   has_many_attached :photos
@@ -15,7 +15,11 @@ class Activity < ApplicationRecord
 
   def display_value
     return nil unless value
-    "#{value} #{unit}".strip
+    if category == "blood_pressure" && unit.present?
+      "#{value.to_i} / #{unit}"
+    else
+      "#{value} #{unit}".strip
+    end
   end
 
   def intake?

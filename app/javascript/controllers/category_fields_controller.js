@@ -103,6 +103,15 @@ const CATEGORY_CONFIG = {
     showPhotos: false,
     showAmount: true,
   },
+  blood_pressure: {
+    valueLabel: "Systolic",
+    valuePlaceholder: "e.g. 120",
+    unitMode: "bp",
+    showCalories: false,
+    notesPlaceholder: "Time of day, arm used, notes...",
+    showPhotos: false,
+    showAmount: true,
+  },
   other: {
     valueLabel: "Amount",
     valuePlaceholder: "e.g. 3.5",
@@ -123,8 +132,12 @@ export default class extends Controller {
     "amountRow",
     "valueLabel",
     "valueField",
+    "unitGroup",
     "unitSelect",
     "unitText",
+    "diastolicGroup",
+    "diastolicField",
+    "bpAnalyzeRow",
     "calorieRow",
     "calorieLabel",
     "calorieHint",
@@ -157,9 +170,27 @@ export default class extends Controller {
       this.valueFieldTarget.placeholder = config.valuePlaceholder
     }
 
+    // Diastolic field (BP mode)
+    const isBP = config.unitMode === "bp"
+    if (this.hasUnitGroupTarget) {
+      this.unitGroupTarget.style.display = isBP ? "none" : ""
+    }
+    if (this.hasDiastolicGroupTarget) {
+      this.diastolicGroupTarget.style.display = isBP ? "" : "none"
+      this.diastolicFieldTarget.name = isBP ? "activity[unit]" : ""
+    }
+    if (this.hasBpAnalyzeRowTarget) {
+      this.bpAnalyzeRowTarget.style.display = isBP ? "" : "none"
+    }
+
     // Unit: select vs fixed vs free text
     if (this.hasUnitSelectTarget && this.hasUnitTextTarget) {
-      if (config.unitMode === "select") {
+      if (config.unitMode === "bp") {
+        this.unitSelectTarget.style.display = "none"
+        this.unitTextTarget.style.display = "none"
+        this.unitSelectTarget.name = ""
+        this.unitTextTarget.name = ""
+      } else if (config.unitMode === "select") {
         this.unitSelectTarget.style.display = ""
         this.unitTextTarget.style.display = "none"
         this.unitTextTarget.name = ""

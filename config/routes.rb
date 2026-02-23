@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     patch :quick_update, on: :member
     post :duplicate, on: :member
     post :estimate_calories, on: :collection
+    post :analyze_bp, on: :collection
     get :diet_tips, on: :collection
   end
 

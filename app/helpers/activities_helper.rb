@@ -9,12 +9,14 @@ module ActivitiesHelper
     "sleep" => "😴",
     "water" => "💧",
     "prayer_meditation" => "🙏",
+    "blood_pressure" => "❤️",
     "other" => "📝"
   }.freeze
 
   CATEGORY_LABELS = {
     "weights" => "Weight Training",
-    "prayer_meditation" => "Prayer / Meditation"
+    "prayer_meditation" => "Prayer / Meditation",
+    "blood_pressure" => "Blood Pressure"
   }.freeze
 
   def category_icon(category)
