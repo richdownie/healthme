@@ -866,6 +866,50 @@ select.form-input { appearance: auto; }
   color: var(--color-text-muted);
   margin-top: 3px;
 }
+.rec-has-tip {
+  position: relative;
+  cursor: pointer;
+}
+.rec-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #f8fafc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  min-width: 180px;
+  max-width: 260px;
+  z-index: 50;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  margin-bottom: 6px;
+}
+.rec-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1e293b;
+}
+.rec-has-tip:hover .rec-tooltip,
+.rec-has-tip:focus-within .rec-tooltip {
+  display: block;
+}
+.rec-tip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  white-space: nowrap;
+}
+.rec-tip-row + .rec-tip-row {
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
 .rec-details {
   font-size: 14px;
   color: var(--color-text-muted);

@@ -2,14 +2,14 @@ class ProfilesController < ApplicationController
   def show
     @user = current_user
     @recommendations = @user.recommendations
-    today = current_user.activities.on_date(Time.zone.today)
+    @today_activities = current_user.activities.on_date(Time.zone.today).to_a
     @today = {
-      calories_in: today.calories_intake,
-      calories_burned: today.calories_burned,
-      water: today.where(category: "water").sum(:value).to_f.round(1),
-      protein_g: today.macro_totals[:protein_g],
-      carbs_g: today.macro_totals[:carbs_g],
-      fat_g: today.macro_totals[:fat_g]
+      calories_in: @today_activities.select(&:intake?).sum { |a| a.calories.to_f },
+      calories_burned: @today_activities.select(&:burn?).sum { |a| a.calories.to_f },
+      water: @today_activities.select { |a| a.category == "water" }.sum { |a| a.value.to_f }.round(1),
+      protein_g: @today_activities.select(&:intake?).sum { |a| a.protein_g.to_f }.round(1),
+      carbs_g: @today_activities.select(&:intake?).sum { |a| a.carbs_g.to_f }.round(1),
+      fat_g: @today_activities.select(&:intake?).sum { |a| a.fat_g.to_f }.round(1)
     }
   end
 

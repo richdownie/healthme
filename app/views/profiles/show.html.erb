@@ -12,51 +12,101 @@
       <h3 class="section-title">Daily Recommendations</h3>
       <p class="goal-badge"><%= @recommendations[:goal_label] %></p>
 
+      <%
+        burn_activities = @today_activities.select(&:burn?)
+        intake_activities = @today_activities.select(&:intake?)
+        water_activities = @today_activities.select { |a| a.category == "water" }
+      %>
       <div class="rec-grid">
-        <div class="rec-item">
+        <div class="rec-item rec-has-tip">
           <span class="rec-label">Daily Burn</span>
           <span class="rec-value"><%= number_with_delimiter(@recommendations[:daily_burn]) %></span>
           <span class="rec-unit">cal/day</span>
           <% burn_pct = @recommendations[:daily_burn] > 0 ? [(@today[:calories_burned].to_f / @recommendations[:daily_burn] * 100), 100].min : 0 %>
           <div class="rec-progress"><div class="rec-bar rec-bar-burn" style="width: <%= burn_pct %>%"></div></div>
           <span class="rec-actual"><%= @today[:calories_burned] %> burned</span>
+          <% if burn_activities.any? %>
+            <div class="rec-tooltip">
+              <% burn_activities.each do |a| %>
+                <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence || category_label(a.category) %></span><span><%= a.calories.to_i %> cal</span></div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-        <div class="rec-item">
+        <div class="rec-item rec-has-tip">
           <span class="rec-label">Calorie Target</span>
           <span class="rec-value"><%= number_with_delimiter(@recommendations[:daily_calories]) %></span>
           <span class="rec-unit">cal/day</span>
           <% cal_pct = @recommendations[:daily_calories] > 0 ? [(@today[:calories_in].to_f / @recommendations[:daily_calories] * 100), 100].min : 0 %>
           <div class="rec-progress"><div class="rec-bar rec-bar-cal" style="width: <%= cal_pct %>%"></div></div>
           <span class="rec-actual"><%= @today[:calories_in] %> eaten</span>
+          <% if intake_activities.select { |a| a.calories.to_f > 0 }.any? %>
+            <div class="rec-tooltip">
+              <% intake_activities.select { |a| a.calories.to_f > 0 }.each do |a| %>
+                <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.calories.to_i %> cal</span></div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-        <div class="rec-item">
+        <div class="rec-item rec-has-tip">
           <span class="rec-label">Water</span>
           <span class="rec-value"><%= @user.effective_water_goal %></span>
           <span class="rec-unit">cups/day</span>
           <% water_goal = @user.effective_water_goal.to_f; water_pct = water_goal > 0 ? [(@today[:water] / water_goal * 100), 100].min : 0 %>
           <div class="rec-progress"><div class="rec-bar rec-bar-water" style="width: <%= water_pct %>%"></div></div>
           <span class="rec-actual"><%= @today[:water] %> cups</span>
+          <% if water_activities.any? %>
+            <div class="rec-tooltip">
+              <% water_activities.each do |a| %>
+                <div class="rec-tip-row"><span><%= category_icon(a.category) %> Water</span><span><%= a.display_value %></span></div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-        <div class="rec-item">
+        <div class="rec-item rec-has-tip">
           <span class="rec-label">Protein</span>
           <span class="rec-value"><%= @recommendations[:protein_g] %>g</span>
           <% pro_pct = @recommendations[:protein_g] > 0 ? [(@today[:protein_g] / @recommendations[:protein_g].to_f * 100), 100].min : 0 %>
           <div class="rec-progress"><div class="rec-bar rec-bar-protein" style="width: <%= pro_pct %>%"></div></div>
           <span class="rec-actual"><%= @today[:protein_g] %>g today</span>
+          <% protein_items = intake_activities.select { |a| a.protein_g.to_f > 0 } %>
+          <% if protein_items.any? %>
+            <div class="rec-tooltip">
+              <% protein_items.each do |a| %>
+                <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.protein_g %>g</span></div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-        <div class="rec-item">
+        <div class="rec-item rec-has-tip">
           <span class="rec-label">Carbs</span>
           <span class="rec-value"><%= @recommendations[:carbs_g] %>g</span>
           <% carbs_pct = @recommendations[:carbs_g] > 0 ? [(@today[:carbs_g] / @recommendations[:carbs_g].to_f * 100), 100].min : 0 %>
           <div class="rec-progress"><div class="rec-bar rec-bar-carbs" style="width: <%= carbs_pct %>%"></div></div>
           <span class="rec-actual"><%= @today[:carbs_g] %>g today</span>
+          <% carb_items = intake_activities.select { |a| a.carbs_g.to_f > 0 } %>
+          <% if carb_items.any? %>
+            <div class="rec-tooltip">
+              <% carb_items.each do |a| %>
+                <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.carbs_g %>g</span></div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-        <div class="rec-item">
+        <div class="rec-item rec-has-tip">
           <span class="rec-label">Fat</span>
           <span class="rec-value"><%= @recommendations[:fat_g] %>g</span>
           <% fat_pct = @recommendations[:fat_g] > 0 ? [(@today[:fat_g] / @recommendations[:fat_g].to_f * 100), 100].min : 0 %>
           <div class="rec-progress"><div class="rec-bar rec-bar-fat" style="width: <%= fat_pct %>%"></div></div>
           <span class="rec-actual"><%= @today[:fat_g] %>g today</span>
+          <% fat_items = intake_activities.select { |a| a.fat_g.to_f > 0 } %>
+          <% if fat_items.any? %>
+            <div class="rec-tooltip">
+              <% fat_items.each do |a| %>
+                <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.fat_g %>g</span></div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
 
