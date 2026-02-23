@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     post :estimate_calories, on: :collection
     post :analyze_bp, on: :collection
     post :analyze_medication, on: :collection
+    post :analyze_sleep, on: :collection
     get :diet_tips, on: :collection
   end
 

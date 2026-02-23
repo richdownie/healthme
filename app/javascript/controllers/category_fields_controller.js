@@ -82,6 +82,7 @@ const CATEGORY_CONFIG = {
     notesPlaceholder: "Sleep quality, wake-ups, etc.",
     showPhotos: false,
     showAmount: true,
+    showSleepAnalyze: true,
   },
   water: {
     valueLabel: "Amount",
@@ -150,6 +151,7 @@ export default class extends Controller {
     "diastolicField",
     "bpAnalyzeRow",
     "medAnalyzeRow",
+    "sleepAnalyzeRow",
     "calorieRow",
     "calorieLabel",
     "calorieHint",
@@ -196,6 +198,9 @@ export default class extends Controller {
     }
     if (this.hasMedAnalyzeRowTarget) {
       this.medAnalyzeRowTarget.style.display = config.showMedAnalyze ? "" : "none"
+    }
+    if (this.hasSleepAnalyzeRowTarget) {
+      this.sleepAnalyzeRowTarget.style.display = config.showSleepAnalyze ? "" : "none"
     }
 
     // Unit: select vs fixed vs free text

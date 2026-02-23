@@ -85,6 +85,24 @@ class ActivitiesController < ApplicationController
     end
   end
 
+  def analyze_sleep
+    date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
+    activities_today = current_user.activities.on_date(date).to_a
+
+    result = SleepAnalyzer.analyze(
+      hours: params[:hours],
+      notes: params[:notes],
+      user: current_user,
+      activities_today: activities_today
+    )
+
+    if result
+      render json: result
+    else
+      render json: { error: "Could not analyze sleep" }, status: :unprocessable_entity
+    end
+  end
+
   def analyze_medication
     date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
     medications_today = current_user.activities.on_date(date).where(category: "medication").to_a
