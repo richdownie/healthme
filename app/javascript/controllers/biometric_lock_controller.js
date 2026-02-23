@@ -11,12 +11,11 @@ export default class extends Controller {
 
     this.showToggleSection()
 
-    // Only lock on fresh app launch, not on Turbo navigations
-    if (!window._biometricUnlocked) {
-      this.loadSetting().then((enabled) => {
-        if (enabled) this.lock()
-      })
-    }
+    // Always load setting to update toggle UI
+    this.loadSetting().then((enabled) => {
+      // Only lock on fresh app launch, not on Turbo navigations
+      if (enabled && !window._biometricUnlocked) this.lock()
+    })
 
     // Register appStateChange listener once globally
     if (!window._biometricListenerRegistered) {

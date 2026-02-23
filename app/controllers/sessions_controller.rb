@@ -17,6 +17,12 @@ class SessionsController < ApplicationController
   end
 
   def create
+    if Rails.env.test? && params[:test_user_id].present?
+      user = User.find(params[:test_user_id])
+      set_current_user(user)
+      return render json: { success: true, redirect_to: root_path }
+    end
+
     if params[:signed_event].present?
       create_from_nostr_event
     else
