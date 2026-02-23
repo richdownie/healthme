@@ -180,7 +180,7 @@
       </div>
 
       <div class="activity-groups" data-sort-toggle-target="timeline" style="display: none;">
-        <% @activities.sort_by { |a| [a.category == "water" ? 1 : 0, -a.created_at.to_f] }.each do |activity| %>
+        <% @activities.sort_by { |a| [a.category == "water" ? 1 : 0, a.created_at.to_f] }.each do |activity| %>
           <div class="timeline-entry">
             <span class="timeline-icon"><%= category_icon(activity.category) %></span>
             <%= render partial: "activities/activity_card", locals: { activity: activity } %>
