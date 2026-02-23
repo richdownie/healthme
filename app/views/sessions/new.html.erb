@@ -1,4 +1,4 @@
-<div class="container" data-controller="keypair auth nostr">
+<div class="container" data-controller="keypair auth nostr faceid-auth">
   <header class="app-header">
     <h1>HealthMe</h1>
     <p class="tagline">Sign in with your keypair</p>
@@ -7,6 +7,17 @@
   <% if flash[:alert] %>
     <div class="flash-notice"><%= flash[:alert] %></div>
   <% end %>
+
+  <!-- Face ID sign-in (hidden until stored key detected on native) -->
+  <div class="faceid-section" style="display:none;" data-faceid-auth-target="section">
+    <button type="button"
+            class="btn btn-faceid btn-block"
+            data-faceid-auth-target="button"
+            data-action="click->faceid-auth#signInWithFaceId">
+      Sign in with Face ID
+    </button>
+    <div class="auth-divider"><span>or sign in manually</span></div>
+  </div>
 
   <!-- Nostr Extension Button (hidden until extension detected) -->
   <div class="extension-section">
@@ -71,7 +82,7 @@
         <input type="password" class="form-input"
                placeholder="nsec1... or 64-char hex"
                data-keypair-target="nsecInput"
-               data-action="input->keypair#deriveFromNsec">
+               data-action="input->keypair#deriveFromNsec paste->keypair#deriveFromNsecAfterPaste change->keypair#deriveFromNsec">
       </div>
 
       <div data-keypair-target="derivedDisplay" style="display:none;">
@@ -79,11 +90,11 @@
           <label>Derived Public Key</label>
           <input type="text" readonly class="form-input mono-field" data-keypair-target="derivedNpub">
         </div>
-
-        <button type="button" class="btn btn-primary btn-block" data-action="click->auth#signIn">
-          Sign In
-        </button>
       </div>
+
+      <button type="button" class="btn btn-primary btn-block" data-action="click->keypair#deriveAndSignIn">
+        Sign In
+      </button>
     </div>
   </div>
 

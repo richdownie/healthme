@@ -10,20 +10,35 @@ export default class extends Controller {
     if (!this.isNative) return
 
     this.showToggleSection()
-    this.loadSetting().then((enabled) => {
-      if (enabled) this.lock()
-    })
 
-    // Re-lock when app resumes from background
-    const { App } = window.Capacitor.Plugins
-    if (App) {
-      App.addListener("appStateChange", ({ isActive }) => {
-        if (isActive) {
-          this.loadSetting().then((enabled) => {
-            if (enabled) this.lock()
-          })
-        }
+    // Only lock on fresh app launch, not on Turbo navigations
+    if (!window._biometricUnlocked) {
+      this.loadSetting().then((enabled) => {
+        if (enabled) this.lock()
       })
+    }
+
+    // Register appStateChange listener once globally
+    if (!window._biometricListenerRegistered) {
+      window._biometricListenerRegistered = true
+      const { App } = window.Capacitor.Plugins
+      if (App) {
+        App.addListener("appStateChange", ({ isActive }) => {
+          if (!isActive) {
+            window._biometricWentToBackground = true
+          } else if (window._biometricWentToBackground) {
+            window._biometricWentToBackground = false
+            // Face ID dismiss triggers isActive false→true within ~1s.
+            // Ignore state changes within 3s of a successful unlock.
+            const timeSinceUnlock = Date.now() - (window._biometricUnlockTime || 0)
+            if (timeSinceUnlock < 3000) return
+            window._biometricUnlocked = false
+            this.loadSetting().then((enabled) => {
+              if (enabled) this.lock()
+            })
+          }
+        })
+      }
     }
   }
 
@@ -42,6 +57,7 @@ export default class extends Controller {
   // --- Lock / Unlock ---
 
   lock() {
+    if (this._authenticating) return
     if (this.hasOverlayTarget) {
       this.overlayTarget.style.display = "flex"
     }
@@ -49,12 +65,16 @@ export default class extends Controller {
   }
 
   unlock() {
+    window._biometricUnlocked = true
+    window._biometricUnlockTime = Date.now()
     if (this.hasOverlayTarget) {
       this.overlayTarget.style.display = "none"
     }
   }
 
   async authenticate() {
+    if (this._authenticating) return
+    this._authenticating = true
     try {
       await this.biometric.authenticate({ reason: "Unlock HealthMe" })
       this.unlock()
@@ -63,6 +83,8 @@ export default class extends Controller {
       if (this.hasRetryButtonTarget) {
         this.retryButtonTarget.style.display = "inline-block"
       }
+    } finally {
+      this._authenticating = false
     }
   }
 
@@ -102,6 +124,9 @@ export default class extends Controller {
         }
         await this.biometric.authenticate({ reason: "Enable biometric lock" })
         await this.storage.set({ key: "biometric_enabled", value: "true" })
+        // Mark as unlocked so we don't immediately lock after enabling
+        window._biometricUnlocked = true
+        window._biometricUnlockTime = Date.now()
       } catch {
         this.toggleTarget.checked = false
       }

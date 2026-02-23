@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { schnorr } from "@noble/curves/secp256k1"
 import { sha256 } from "@noble/hashes/sha256"
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils"
+import FaceidAuthController from "controllers/faceid_auth_controller"
 
 export default class extends Controller {
   static targets = ["pubkeyHex", "secretKey", "challengeUrl", "sessionUrl", "csrfToken"]
@@ -59,6 +60,7 @@ export default class extends Controller {
       const result = await sessionRes.json()
 
       if (result.success) {
+        FaceidAuthController.storeKey(secretHex)
         window.Turbo.visit(result.redirect_to)
       } else {
         alert(result.error || "Authentication failed")

@@ -7,6 +7,10 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://healthme.fly.dev',
     allowNavigation: ['healthme.fly.dev']
+  },
+  ios: {
+    contentInset: 'always',
+    scrollEnabled: true
   }
 };
 

@@ -39,10 +39,21 @@ export default class extends Controller {
     this.#setAuthFields(pubkeyHex, secretHex)
   }
 
+  deriveAndSignIn() {
+    this.deriveFromNsec()
+    const authController = this.application.getControllerForElementAndIdentifier(this.element, "auth")
+    if (authController) authController.signIn()
+  }
+
+  // Paste event fires before the value is updated — delay the read
+  deriveFromNsecAfterPaste() {
+    setTimeout(() => this.deriveFromNsec(), 0)
+  }
+
   deriveFromNsec() {
     const input = this.nsecInputTarget.value.trim()
     if (!input) {
-      this.derivedDisplayTarget.style.display = "none"
+      if (this.hasDerivedDisplayTarget) this.derivedDisplayTarget.style.display = "none"
       return
     }
 
@@ -53,7 +64,7 @@ export default class extends Controller {
       } else if (/^[0-9a-f]{64}$/i.test(input)) {
         secretHex = input.toLowerCase()
       } else {
-        this.derivedDisplayTarget.style.display = "none"
+        if (this.hasDerivedDisplayTarget) this.derivedDisplayTarget.style.display = "none"
         return
       }
 
@@ -62,11 +73,11 @@ export default class extends Controller {
       const pubkeyHex = bytesToHex(pubkeyBytes)
       const npub = this.#encodeBech32("npub", pubkeyHex)
 
-      this.derivedNpubTarget.value = npub
-      this.derivedDisplayTarget.style.display = ""
+      if (this.hasDerivedNpubTarget) this.derivedNpubTarget.value = npub
+      if (this.hasDerivedDisplayTarget) this.derivedDisplayTarget.style.display = ""
       this.#setAuthFields(pubkeyHex, secretHex)
     } catch (e) {
-      this.derivedDisplayTarget.style.display = "none"
+      if (this.hasDerivedDisplayTarget) this.derivedDisplayTarget.style.display = "none"
     }
   }
 
