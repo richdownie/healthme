@@ -21,7 +21,7 @@
   <div class="form-row" data-category-fields-target="amountRow">
     <div class="form-group form-group-half">
       <%= f.label :value, "Amount", data: { category_fields_target: "valueLabel" } %>
-      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input", data: { calorie_estimator_target: "value", category_fields_target: "valueField" } %>
+      <%= f.number_field :value, step: "any", placeholder: "e.g. 3.5", class: "form-input", data: { calorie_estimator_target: "value", category_fields_target: "valueField", action: "input->category-fields#valueChanged input->calorie-estimator#valueChanged" } %>
     </div>
 
     <div class="form-group form-group-half">
@@ -37,11 +37,12 @@
     <%= f.label :calories, "Calories Consumed", data: { category_fields_target: "calorieLabel" } %>
     <div class="calorie-input-row">
       <%= f.number_field :calories, min: 0, placeholder: "e.g. 350", class: "form-input", data: { calorie_estimator_target: "calories" } %>
-      <button type="button" class="btn btn-sm btn-outline btn-estimate" data-action="click->calorie-estimator#estimateClicked">
+      <button type="button" class="btn btn-sm btn-outline btn-estimate" data-calorie-estimator-target="estimateBtn" data-action="click->calorie-estimator#estimateClicked">
         Estimate
       </button>
     </div>
     <span class="calorie-status" style="display:none;" data-calorie-estimator-target="status"></span>
+    <div class="risk-meter" style="display:none;" data-calorie-estimator-target="riskMeter"></div>
     <span class="form-hint" data-category-fields-target="calorieHint">Estimated calories in this food or drink</span>
   </div>
 
@@ -69,6 +70,12 @@
       </div>
     <% end %>
   </div>
+
+  <%= f.hidden_field :protein_g, data: { calorie_estimator_target: "proteinG" } %>
+  <%= f.hidden_field :carbs_g,   data: { calorie_estimator_target: "carbsG" } %>
+  <%= f.hidden_field :fat_g,     data: { calorie_estimator_target: "fatG" } %>
+  <%= f.hidden_field :fiber_g,   data: { calorie_estimator_target: "fiberG" } %>
+  <%= f.hidden_field :sugar_g,   data: { calorie_estimator_target: "sugarG" } %>
 
   <div class="form-group">
     <%= f.label :performed_on, "Date" %>

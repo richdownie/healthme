@@ -63,6 +63,29 @@
         </div>
         <span class="target-numbers"><%= @calories_in %> / <%= number_with_delimiter(@recommendations[:daily_calories]) %></span>
       </div>
+      <% if @recommendations[:protein_g] && @recommendations[:protein_g] > 0 %>
+        <div class="target-row">
+          <span class="target-label">Protein</span>
+          <div class="target-progress">
+            <div class="target-bar target-bar-protein" style="width: <%= [(@macros[:protein_g] / @recommendations[:protein_g].to_f * 100), 100].min %>%"></div>
+          </div>
+          <span class="target-numbers"><%= @macros[:protein_g].round(0) %> / <%= @recommendations[:protein_g] %>g</span>
+        </div>
+        <div class="target-row">
+          <span class="target-label">Carbs</span>
+          <div class="target-progress">
+            <div class="target-bar target-bar-carbs" style="width: <%= [(@macros[:carbs_g] / @recommendations[:carbs_g].to_f * 100), 100].min %>%"></div>
+          </div>
+          <span class="target-numbers"><%= @macros[:carbs_g].round(0) %> / <%= @recommendations[:carbs_g] %>g</span>
+        </div>
+        <div class="target-row">
+          <span class="target-label">Fat</span>
+          <div class="target-progress">
+            <div class="target-bar target-bar-fat" style="width: <%= [(@macros[:fat_g] / @recommendations[:fat_g].to_f * 100), 100].min %>%"></div>
+          </div>
+          <span class="target-numbers"><%= @macros[:fat_g].round(0) %> / <%= @recommendations[:fat_g] %>g</span>
+        </div>
+      <% end %>
       <% exercise_goal = @recommendations[:activity_burn].to_f %>
       <% walk_cal = @activities.where(category: "walk").sum(:calories) %>
       <% run_cal = @activities.where(category: "run").sum(:calories) %>

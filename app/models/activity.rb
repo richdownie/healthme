@@ -33,4 +33,15 @@ class Activity < ApplicationRecord
   def self.calories_burned
     where(category: BURN_CATEGORIES).sum(:calories)
   end
+
+  def self.macro_totals
+    intake = where(category: INTAKE_CATEGORIES)
+    {
+      protein_g: intake.sum(:protein_g).to_f.round(1),
+      carbs_g:   intake.sum(:carbs_g).to_f.round(1),
+      fat_g:     intake.sum(:fat_g).to_f.round(1),
+      fiber_g:   intake.sum(:fiber_g).to_f.round(1),
+      sugar_g:   intake.sum(:sugar_g).to_f.round(1)
+    }
+  end
 end

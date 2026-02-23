@@ -8,6 +8,7 @@ class ActivitiesController < ApplicationController
     @calories_in = @activities.calories_intake
     @calories_burned = @activities.calories_burned
     @calories_net = @calories_in - @calories_burned
+    @macros = @activities.macro_totals
     @recommendations = current_user.recommendations
     @prev_activities = filter_already_added(
       current_user.activities.on_date(@date - 1.day).order(:category, :created_at),
@@ -55,7 +56,8 @@ class ActivitiesController < ApplicationController
       notes: params[:notes],
       category: params[:category],
       value: params[:value],
-      unit: params[:unit]
+      unit: params[:unit],
+      health_concerns: current_user.health_concerns
     )
 
     if result
@@ -111,7 +113,8 @@ class ActivitiesController < ApplicationController
   end
 
   def activity_params
-    params.require(:activity).permit(:category, :value, :unit, :notes, :performed_on, :calories, photos: [])
+    params.require(:activity).permit(:category, :value, :unit, :notes, :performed_on, :calories,
+                                     :protein_g, :carbs_g, :fat_g, :fiber_g, :sugar_g, photos: [])
   end
 
   def activity_signature(activity)

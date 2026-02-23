@@ -16,6 +16,25 @@
         <%= activity.intake? ? "+" : "-" %><%= activity.calories %> cal
       </span>
     <% end %>
+    <% if activity.intake? && [activity.protein_g, activity.carbs_g, activity.fat_g].any?(&:present?) %>
+      <div class="activity-macros">
+        <% if activity.protein_g.present? && activity.protein_g > 0 %>
+          <span class="macro-tag macro-protein">P: <%= activity.protein_g %>g</span>
+        <% end %>
+        <% if activity.carbs_g.present? && activity.carbs_g > 0 %>
+          <span class="macro-tag macro-carbs">C: <%= activity.carbs_g %>g</span>
+        <% end %>
+        <% if activity.fat_g.present? && activity.fat_g > 0 %>
+          <span class="macro-tag macro-fat">F: <%= activity.fat_g %>g</span>
+        <% end %>
+        <% if activity.fiber_g.present? && activity.fiber_g > 0 %>
+          <span class="macro-tag macro-fiber">Fiber: <%= activity.fiber_g %>g</span>
+        <% end %>
+        <% if activity.sugar_g.present? && activity.sugar_g > 0 %>
+          <span class="macro-tag macro-sugar">Sugar: <%= activity.sugar_g %>g</span>
+        <% end %>
+      </div>
+    <% end %>
     <% if activity.notes.present? %>
       <p class="activity-notes"><%= activity.notes %></p>
     <% end %>

@@ -12,12 +12,12 @@ class CalorieEstimator
   # @param value [String, nil] Amount (e.g. "0.5")
   # @param unit [String, nil] Unit (e.g. "cup")
   # @return [Hash, nil] { calories: Integer, description: String } or nil
-  def self.estimate(images: [], notes: nil, category: nil, value: nil, unit: nil)
+  def self.estimate(images: [], notes: nil, category: nil, value: nil, unit: nil, health_concerns: nil)
     api_key = ENV["ANTHROPIC_API_KEY"]
     return nil unless api_key.present?
     return nil if images.empty? && notes.blank?
 
-    content = build_content(images, notes, category, value, unit)
+    content = build_content(images, notes, category, value, unit, health_concerns)
     response = call_api(api_key, content)
     parse_response(response)
   rescue StandardError => e
@@ -25,7 +25,7 @@ class CalorieEstimator
     nil
   end
 
-  private_class_method def self.build_content(images, notes, category, value, unit)
+  private_class_method def self.build_content(images, notes, category, value, unit, health_concerns)
     parts = []
 
     images.each do |img|
@@ -45,9 +45,18 @@ class CalorieEstimator
     context_parts << "Amount: #{value} #{unit}".strip if value.present?
     context_parts << "Description: #{notes}" if notes.present?
 
-    prompt = "Estimate the total calories for this food or activity."
+    prompt = "Estimate the total calories and macronutrients for this food or activity."
+    prompt += "\nWhen the unit is 'servings', treat 1 serving as 1 individual item (e.g. 1 egg, 1 apple, 1 slice). Do NOT use USDA reference servings. Estimate for exactly the specified amount." if value.present?
+    if health_concerns.present?
+      prompt += "\nThe user has these health concerns: #{health_concerns}."
+      prompt += "\nRate the health risk of this food for someone with these conditions. Use: \"low\" (good/safe), \"medium\" (okay in moderation), or \"high\" (should avoid or limit)."
+      prompt += "\nProvide a brief reason for the rating."
+    end
     prompt += "\n#{context_parts.join("\n")}" if context_parts.any?
-    prompt += "\n\nRespond with ONLY a JSON object like: {\"calories\": 350, \"description\": \"brief description of what you see\"}"
+    prompt += "\n\nRespond with ONLY a JSON object like: {\"calories\": 350, \"protein_g\": 25.0, \"carbs_g\": 40.0, \"fat_g\": 12.0, \"fiber_g\": 5.0, \"sugar_g\": 8.0, \"description\": \"brief description\""
+    prompt += ", \"health_risk\": \"low\", \"health_risk_reason\": \"brief reason\"" if health_concerns.present?
+    prompt += "}"
+    prompt += "\nAll nutrient values should be in grams. Estimate to one decimal place."
     prompt += "\nDo not include any other text. Just the JSON."
 
     parts << { type: "text", text: prompt }
@@ -67,7 +76,7 @@ class CalorieEstimator
 
     request.body = {
       model: MODEL,
-      max_tokens: 150,
+      max_tokens: 350,
       messages: [ { role: "user", content: content } ]
     }.to_json
 
@@ -96,7 +105,18 @@ class CalorieEstimator
 
     return nil if calories <= 0
 
-    { calories: calories, description: description }
+    result = {
+      calories: calories,
+      description: description,
+      protein_g: data["protein_g"]&.to_f&.round(1),
+      carbs_g:   data["carbs_g"]&.to_f&.round(1),
+      fat_g:     data["fat_g"]&.to_f&.round(1),
+      fiber_g:   data["fiber_g"]&.to_f&.round(1),
+      sugar_g:   data["sugar_g"]&.to_f&.round(1)
+    }
+    result[:health_risk] = data["health_risk"] if data["health_risk"].present?
+    result[:health_risk_reason] = data["health_risk_reason"] if data["health_risk_reason"].present?
+    result
   rescue JSON::ParserError
     nil
   end

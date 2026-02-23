@@ -136,6 +136,10 @@ export default class extends Controller {
     this.toggle()
   }
 
+  valueChanged() {
+    this.#updateFieldLock()
+  }
+
   toggle() {
     const select = this.element.querySelector("select[name*='category']")
     if (!select) return
@@ -205,6 +209,26 @@ export default class extends Controller {
     // Photos section
     if (this.hasPhotosRowTarget) {
       this.photosRowTarget.style.display = config.showPhotos ? "" : "none"
+    }
+
+    this.#updateFieldLock()
+  }
+
+  #updateFieldLock() {
+    const select = this.element.querySelector("select[name*='category']")
+    if (!select) return
+
+    const config = CATEGORY_CONFIG[select.value]
+    const needsAmount = config && ["food", "coffee"].includes(select.value)
+    const hasAmount = this.hasValueFieldTarget && this.valueFieldTarget.value.trim() !== ""
+    const locked = needsAmount && !hasAmount
+
+    if (this.hasCalorieRowTarget) {
+      this.calorieRowTarget.querySelectorAll("input, button").forEach(el => el.disabled = locked)
+    }
+    if (this.hasNotesFieldTarget) this.notesFieldTarget.disabled = locked
+    if (this.hasPhotosRowTarget) {
+      this.photosRowTarget.querySelectorAll("input").forEach(el => el.disabled = locked)
     }
   }
 

@@ -426,6 +426,43 @@ select.form-input { appearance: auto; }
   color: #15803d;
 }
 
+.activity-macros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.macro-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+.macro-protein { background: #dbeafe; color: #1e40af; }
+.macro-carbs   { background: #fef3c7; color: #92400e; }
+.macro-fat     { background: #fce7f3; color: #9d174d; }
+.macro-fiber   { background: #d1fae5; color: #065f46; }
+.macro-sugar   { background: #fde8e8; color: #991b1b; }
+
+.risk-meter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  margin-top: 4px;
+}
+.risk-dots {
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+.risk-label {
+  font-weight: 600;
+}
+.risk-reason {
+  color: var(--color-text-muted);
+}
+
 /* Auth styles */
 .auth-card {
   background: var(--color-surface);
@@ -865,6 +902,9 @@ select.form-input { appearance: auto; }
 .target-bar-prayer {
   background: #a855f7;
 }
+.target-bar-protein { background: #3b82f6; }
+.target-bar-carbs   { background: #f59e0b; }
+.target-bar-fat     { background: #ec4899; }
 .target-numbers {
   font-size: 12px;
   color: var(--color-text-muted);
