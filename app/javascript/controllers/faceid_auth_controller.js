@@ -29,12 +29,15 @@ export default class extends Controller {
 
   async checkStoredKey() {
     try {
+      const { value: enabled } = await this.storage.get({ key: "biometric_enabled" })
+      if (enabled !== "true") return
+
       const { value } = await this.storage.get({ key: "stored_nsec" })
       if (value) {
         if (this.hasSectionTarget) this.sectionTarget.style.display = ""
       }
     } catch {
-      // No stored key — keep button hidden
+      // No stored key or biometric not enabled — keep button hidden
     }
   }
 
@@ -88,6 +91,10 @@ export default class extends Controller {
 
       const result = await sessionRes.json()
       if (result.success) {
+        // Also enable biometric lock since user chose Face ID sign-in
+        await this.storage.set({ key: "biometric_enabled", value: "true" })
+        window._biometricUnlocked = true
+        window._biometricUnlockTime = Date.now()
         window.Turbo.visit(result.redirect_to)
       } else {
         alert(result.error || "Authentication failed")
