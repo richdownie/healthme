@@ -23,7 +23,7 @@
 
       <div class="form-group">
         <%= f.label :date_of_birth, "Date of Birth" %>
-        <%= f.date_field :date_of_birth, class: "form-input", max: Date.today.iso8601 %>
+        <%= f.date_field :date_of_birth, class: "form-input", max: Time.zone.today.iso8601 %>
       </div>
 
       <div class="form-group">

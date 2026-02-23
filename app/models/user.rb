@@ -32,7 +32,7 @@ class User < ApplicationRecord
 
   def age
     return nil unless date_of_birth
-    today = Date.today
+    today = Time.zone.today
     age = today.year - date_of_birth.year
     age -= 1 if today < date_of_birth + age.years
     age

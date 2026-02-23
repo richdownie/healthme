@@ -69,7 +69,7 @@
 
   <div class="form-group">
     <%= f.label :performed_on, "Date" %>
-    <%= f.date_field :performed_on, class: "form-input", max: Date.today.iso8601 %>
+    <%= f.date_field :performed_on, class: "form-input", max: Time.zone.today.iso8601 %>
   </div>
   <input type="hidden" value="<%= form_authenticity_token %>" data-calorie-estimator-target="csrfToken">
 

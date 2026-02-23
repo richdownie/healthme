@@ -2,7 +2,7 @@ class ActivitiesController < ApplicationController
   before_action :set_activity, only: %i[edit update destroy quick_update duplicate]
 
   def index
-    @date = params[:date] ? Date.parse(params[:date]) : Date.today
+    @date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
     @activities = current_user.activities.on_date(@date).order(created_at: :desc).with_attached_photos
     @grouped = @activities.group_by(&:category)
     @calories_in = @activities.calories_intake
@@ -16,7 +16,7 @@ class ActivitiesController < ApplicationController
   end
 
   def new
-    @activity = current_user.activities.new(performed_on: params[:date] || Date.today)
+    @activity = current_user.activities.new(performed_on: params[:date] || Time.zone.today)
   end
 
   def create
@@ -72,7 +72,7 @@ class ActivitiesController < ApplicationController
   end
 
   def duplicate
-    target_date = params[:date] ? Date.parse(params[:date]) : Date.today
+    target_date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
     new_activity = @activity.dup
     new_activity.performed_on = target_date
     @activity.photos.each { |photo| new_activity.photos.attach(photo.blob) }
@@ -81,7 +81,7 @@ class ActivitiesController < ApplicationController
   end
 
   def diet_tips
-    date = params[:date] ? Date.parse(params[:date]) : Date.today
+    date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
     activities = current_user.activities.on_date(date)
     recommendations = current_user.recommendations
 
