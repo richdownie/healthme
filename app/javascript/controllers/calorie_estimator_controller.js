@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["photo", "notes", "calories", "category", "value", "unit", "status", "csrfToken"]
+  static targets = ["photo", "notes", "calories", "category", "value", "status", "csrfToken"]
 
   // Track whether calories were auto-filled (so we don't overwrite manual edits)
   #autoFilled = false
@@ -39,7 +39,8 @@ export default class extends Controller {
     if (this.notesTarget.value) formData.append("notes", this.notesTarget.value)
     if (this.categoryTarget.value) formData.append("category", this.categoryTarget.value)
     if (this.hasValueTarget && this.valueTarget.value) formData.append("value", this.valueTarget.value)
-    if (this.hasUnitTarget && this.unitTarget.value) formData.append("unit", this.unitTarget.value)
+    const unitInput = this.element.querySelector("[name='activity[unit]']")
+    if (unitInput && unitInput.value) formData.append("unit", unitInput.value)
 
     this.#setStatus("Estimating calories...")
 

@@ -1,6 +1,7 @@
 module ActivitiesHelper
   CATEGORY_ICONS = {
     "food" => "🍽️",
+    "coffee" => "☕",
     "walk" => "🚶",
     "run" => "🏃",
     "weights" => "🏋️",

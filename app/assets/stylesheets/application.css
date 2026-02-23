@@ -353,6 +353,9 @@ select.form-input { appearance: auto; }
   color: var(--color-text-muted);
   margin-top: 4px;
 }
+.unit-combo .form-input {
+  width: 100%;
+}
 
 /* Calorie Summary */
 .calorie-summary {
