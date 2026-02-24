@@ -27,7 +27,7 @@
           <span class="rec-actual"><%= @today[:calories_burned] %> burned</span>
           <% if burn_activities.any? %>
             <div class="rec-tooltip">
-              <% burn_activities.each do |a| %>
+              <% burn_activities.sort_by { |a| -a.calories.to_f }.each do |a| %>
                 <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence || category_label(a.category) %></span><span><%= a.calories.to_i %> cal</span></div>
               <% end %>
             </div>
@@ -42,7 +42,7 @@
           <span class="rec-actual"><%= @today[:calories_in] %> eaten</span>
           <% if intake_activities.select { |a| a.calories.to_f > 0 }.any? %>
             <div class="rec-tooltip">
-              <% intake_activities.select { |a| a.calories.to_f > 0 }.each do |a| %>
+              <% intake_activities.select { |a| a.calories.to_f > 0 }.sort_by { |a| -a.calories.to_f }.each do |a| %>
                 <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.calories.to_i %> cal</span></div>
               <% end %>
             </div>
@@ -72,7 +72,7 @@
           <% protein_items = intake_activities.select { |a| a.protein_g.to_f > 0 } %>
           <% if protein_items.any? %>
             <div class="rec-tooltip">
-              <% protein_items.each do |a| %>
+              <% protein_items.sort_by { |a| -a.protein_g.to_f }.each do |a| %>
                 <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.protein_g %>g</span></div>
               <% end %>
             </div>
@@ -87,7 +87,7 @@
           <% carb_items = intake_activities.select { |a| a.carbs_g.to_f > 0 } %>
           <% if carb_items.any? %>
             <div class="rec-tooltip">
-              <% carb_items.each do |a| %>
+              <% carb_items.sort_by { |a| -a.carbs_g.to_f }.each do |a| %>
                 <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.carbs_g %>g</span></div>
               <% end %>
             </div>
@@ -102,7 +102,7 @@
           <% fat_items = intake_activities.select { |a| a.fat_g.to_f > 0 } %>
           <% if fat_items.any? %>
             <div class="rec-tooltip">
-              <% fat_items.each do |a| %>
+              <% fat_items.sort_by { |a| -a.fat_g.to_f }.each do |a| %>
                 <div class="rec-tip-row"><span><%= category_icon(a.category) %> <%= a.notes.presence&.truncate(20) || category_label(a.category) %></span><span><%= a.fat_g %>g</span></div>
               <% end %>
             </div>
