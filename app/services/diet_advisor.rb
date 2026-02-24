@@ -32,9 +32,38 @@ class DietAdvisor
       parts.join(" — ")
     end
 
+    coffee_log = activities.select { |a| a.category == "coffee" }.map do |a|
+      parts = []
+      parts << "#{a.value} #{a.unit}" if a.value.present?
+      parts << a.notes if a.notes.present?
+      parts << "(#{a.calories} cal)" if a.calories.present? && a.calories > 0
+      parts.join(" — ")
+    end
+
     water_cups = activities.select { |a| a.category == "water" }.sum(&:value)
+
     exercise = activities.select { |a| a.category.in?(Activity::BURN_CATEGORIES) }.map do |a|
-      "#{a.category.humanize}: #{a.calories || 0} cal burned#{" — #{a.notes}" if a.notes.present?}"
+      "#{a.category.humanize}: #{a.display_value}#{" — #{a.calories} cal burned" if a.calories.to_i > 0}#{" — #{a.notes}" if a.notes.present?}"
+    end
+
+    sleep_log = activities.select { |a| a.category == "sleep" }.map do |a|
+      "#{a.value} #{a.unit}#{" — #{a.notes}" if a.notes.present?}"
+    end
+
+    bp_log = activities.select { |a| a.category == "blood_pressure" }.map do |a|
+      "#{a.display_value}#{" — #{a.notes}" if a.notes.present?}"
+    end
+
+    med_log = activities.select { |a| a.category == "medication" }.map do |a|
+      "#{a.notes.presence || 'Unknown'}: #{a.display_value}"
+    end
+
+    prayer_log = activities.select { |a| a.category == "prayer_meditation" }.map do |a|
+      "#{a.value} #{a.unit}#{" — #{a.notes}" if a.notes.present?}"
+    end
+
+    weight_log = activities.select { |a| a.category == "body_weight" }.map do |a|
+      "#{a.display_value}#{" — #{a.notes}" if a.notes.present?}"
     end
 
     calories_in = activities.select(&:intake?).sum { |a| a.calories.to_i }
@@ -54,32 +83,40 @@ class DietAdvisor
         Daily calorie target: #{recs[:daily_calories]} cal
         Protein target: #{recs[:protein_g]}g, Carbs: #{recs[:carbs_g]}g, Fat: #{recs[:fat_g]}g
         Water goal: #{user.effective_water_goal} cups
+        Exercise goal: #{recs[:activity_burn]} cal
+        Prayer/Meditation goal: #{user.prayer_goal_minutes || 5} min
       TARG
     else
       "No calculated targets available."
     end
 
     <<~PROMPT
-      You are a helpful health and nutrition advisor. Based on this user's profile and today's food log, provide 3-4 brief, actionable diet tips.
+      You are a helpful daily wellness advisor. Based on this user's profile and ALL of today's logged activities, provide personalized tips covering their whole day — not just diet.
 
       ## User Profile
       #{profile}
       ## Daily Targets
       #{targets}
-      ## Today's Food Log
-      #{food_log.any? ? food_log.join("\n") : "No food logged yet today."}
+      ## Today's Activities
+
+      **Food:** #{food_log.any? ? food_log.join("; ") : "None logged."}
+      **Coffee:** #{coffee_log.any? ? coffee_log.join("; ") : "None logged."}
+      **Water:** #{water_cups.round(1)} cups
+      **Exercise:** #{exercise.any? ? exercise.join("; ") : "None logged."}
+      **Sleep:** #{sleep_log.any? ? sleep_log.join("; ") : "Not logged."}
+      **Blood Pressure:** #{bp_log.any? ? bp_log.join("; ") : "Not logged today."}
+      **Medications/Supplements:** #{med_log.any? ? med_log.join("; ") : "None logged."}
+      **Prayer/Meditation:** #{prayer_log.any? ? prayer_log.join("; ") : "None logged."}
+      **Body Weight:** #{weight_log.any? ? weight_log.join("; ") : "Not logged today."}
 
       Calories consumed so far: #{calories_in} cal
       Calories burned from exercise: #{calories_burned} cal
-      Water consumed: #{water_cups.round(1)} cups
-
-      ## Today's Exercise
-      #{exercise.any? ? exercise.join("\n") : "No exercise logged."}
 
       ## Instructions
-      - Give 3-4 short, specific, actionable tips based on what they've eaten today and their health profile
+      - Give 4-6 short, specific, actionable tips based on ALL logged activities and their health profile
+      - Address each area that has activity logged (sleep quality, exercise, nutrition, hydration, weight trends, medication timing, etc.)
+      - For areas with no activity logged, suggest what they should do today
       - Consider their BMI, blood pressure, goal, and health concerns
-      - Suggest specific foods they could add for the rest of the day
       - If they have high blood pressure, mention sodium awareness
       - Keep each tip to 1-2 sentences
       - Use a friendly, encouraging tone
@@ -101,7 +138,7 @@ class DietAdvisor
 
     request.body = {
       model: MODEL,
-      max_tokens: 400,
+      max_tokens: 600,
       messages: [ { role: "user", content: prompt } ]
     }.to_json
 
