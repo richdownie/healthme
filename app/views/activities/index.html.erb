@@ -151,6 +151,15 @@
     </div>
   <% end %>
 
+  <% if @activities.any? && current_user.profile_complete? %>
+    <div class="diet-tips-section" data-controller="diet-tips" data-diet-tips-url-value="<%= diet_tips_activities_path(date: @date) %>">
+      <button class="btn btn-outline btn-block" data-diet-tips-target="button" data-action="diet-tips#load">
+        Get Daily Tips
+      </button>
+      <div data-diet-tips-target="content" style="display: none;"></div>
+    </div>
+  <% end %>
+
   <% if @activities.any? %>
     <div data-controller="sort-toggle">
       <div class="sort-toggle-bar">
@@ -197,12 +206,4 @@
     </div>
   <% end %>
 
-  <% if @activities.any? && current_user.profile_complete? %>
-    <div class="diet-tips-section" data-controller="diet-tips" data-diet-tips-url-value="<%= diet_tips_activities_path(date: @date) %>">
-      <button class="btn btn-outline btn-block" data-diet-tips-target="button" data-action="diet-tips#load">
-        Get Daily Tips
-      </button>
-      <div data-diet-tips-target="content" style="display: none;"></div>
-    </div>
-  <% end %>
 </div>
