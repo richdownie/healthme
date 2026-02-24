@@ -10,12 +10,12 @@ class DietAdvisor
   # @param activities [Array<Activity>] today's activities
   # @param recommendations [Hash, nil] from HealthCalculator
   # @return [String, nil] markdown-formatted tips or nil
-  def self.advise(user:, activities:, recommendations:)
+  def self.advise(user:, activities:, recommendations:, last_food_at: nil)
     api_key = ENV["ANTHROPIC_API_KEY"]
     return nil unless api_key.present?
     return nil unless user.profile_complete?
 
-    prompt = build_prompt(user, activities, recommendations)
+    prompt = build_prompt(user, activities, recommendations, last_food_at)
     response = call_api(api_key, prompt)
     parse_response(response)
   rescue StandardError => e
@@ -23,7 +23,7 @@ class DietAdvisor
     nil
   end
 
-  private_class_method def self.build_prompt(user, activities, recs)
+  private_class_method def self.build_prompt(user, activities, recs, last_food_at)
     food_log = activities.select { |a| a.category == "food" }.map do |a|
       parts = []
       parts << "#{a.value} #{a.unit}" if a.value.present?
@@ -108,6 +108,7 @@ class DietAdvisor
       **Medications/Supplements:** #{med_log.any? ? med_log.join("; ") : "None logged."}
       **Prayer/Meditation:** #{prayer_log.any? ? prayer_log.join("; ") : "None logged."}
       **Body Weight:** #{weight_log.any? ? weight_log.join("; ") : "Not logged today."}
+      **Fasting:** #{last_food_at ? "#{((Time.current - last_food_at) / 1.hour).round(1)} hours since last food/coffee (last ate at #{last_food_at.in_time_zone.strftime("%-I:%M %p")})" : "No food logged yet."}
 
       Calories consumed so far: #{calories_in} cal
       Calories burned from exercise: #{calories_burned} cal
@@ -118,6 +119,7 @@ class DietAdvisor
       - For areas with no activity logged, suggest what they should do today
       - Consider their BMI, blood pressure, goal, and health concerns
       - If they have high blood pressure, mention sodium awareness
+      - If they are fasting (hours since last food), acknowledge it and give relevant fasting tips (when to break fast, what to eat first, hydration)
       - Keep each tip to 1-2 sentences
       - Use a friendly, encouraging tone
       - Format as a simple numbered list (1. 2. 3.)

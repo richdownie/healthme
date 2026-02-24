@@ -146,10 +146,16 @@ class ActivitiesController < ApplicationController
     activities = current_user.activities.on_date(date)
     recommendations = current_user.recommendations
 
+    last_food_at = current_user.activities
+      .where(category: %w[food coffee])
+      .order(created_at: :desc)
+      .pick(:created_at)
+
     tips = DietAdvisor.advise(
       user: current_user,
       activities: activities,
-      recommendations: recommendations
+      recommendations: recommendations,
+      last_food_at: last_food_at
     )
 
     if tips
