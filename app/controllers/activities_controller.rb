@@ -5,10 +5,11 @@ class ActivitiesController < ApplicationController
     @date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
     @activities = current_user.activities.on_date(@date).order(created_at: :desc).with_attached_photos
     @grouped = @activities.group_by(&:category)
-    @calories_in = @activities.calories_intake
-    @calories_burned = @activities.calories_burned
+    @day_activities = current_user.activities.on_date(@date)
+    @calories_in = @day_activities.calories_intake
+    @calories_burned = @day_activities.calories_burned
     @calories_net = @calories_in - @calories_burned
-    @macros = @activities.macro_totals
+    @macros = @day_activities.macro_totals
     @recommendations = current_user.recommendations
     @last_food_at = current_user.activities
       .where(category: %w[food coffee])

@@ -90,10 +90,10 @@
         </div>
       <% end %>
       <% exercise_goal = @recommendations[:activity_burn].to_f %>
-      <% walk_cal = @activities.where(category: "walk").sum(:calories) %>
-      <% run_cal = @activities.where(category: "run").sum(:calories) %>
-      <% weights_cal = @activities.where(category: "weights").sum(:calories) %>
-      <% yoga_cal = @activities.where(category: "yoga").sum(:calories) %>
+      <% walk_cal = @day_activities.where(category: "walk").sum(:calories) %>
+      <% run_cal = @day_activities.where(category: "run").sum(:calories) %>
+      <% weights_cal = @day_activities.where(category: "weights").sum(:calories) %>
+      <% yoga_cal = @day_activities.where(category: "yoga").sum(:calories) %>
       <div class="target-row">
         <span class="target-label">Exercise</span>
         <div class="target-progress target-stacked">
@@ -117,7 +117,7 @@
           <% if yoga_cal > 0 %><span class="legend-item"><span class="legend-dot legend-yoga"></span>Yoga <%= yoga_cal %></span><% end %>
         </div>
       <% end %>
-      <% water_today = @activities.where(category: "water").sum(:value) %>
+      <% water_today = @day_activities.where(category: "water").sum(:value) %>
       <% water_goal = current_user.effective_water_goal %>
       <div class="target-row">
         <span class="target-label">Water</span>
@@ -126,7 +126,7 @@
         </div>
         <span class="target-numbers"><%= water_today.round(1) %> / <%= water_goal %> cups</span>
       </div>
-      <% prayer_today = @activities.where(category: "prayer_meditation").sum(:value) %>
+      <% prayer_today = @day_activities.where(category: "prayer_meditation").sum(:value) %>
       <% prayer_goal = current_user.prayer_goal_minutes || 15 %>
       <div class="target-row">
         <span class="target-label">Prayer</span>
