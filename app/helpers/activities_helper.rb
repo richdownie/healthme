@@ -12,6 +12,7 @@ module ActivitiesHelper
     "blood_pressure" => "❤️",
     "medication" => "💊",
     "body_weight" => "⚖️",
+    "brush_teeth" => "🪥",
     "other" => "📝"
   }.freeze
 
@@ -20,7 +21,8 @@ module ActivitiesHelper
     "prayer_meditation" => "Prayer / Meditation",
     "blood_pressure" => "Blood Pressure",
     "medication" => "Medication / Supplement",
-    "body_weight" => "Body Weight"
+    "body_weight" => "Body Weight",
+    "brush_teeth" => "Brush Teeth"
   }.freeze
 
   def category_icon(category)

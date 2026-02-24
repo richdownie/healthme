@@ -1,5 +1,5 @@
 class Activity < ApplicationRecord
-  CATEGORIES = %w[food coffee walk run weights yoga sleep water prayer_meditation blood_pressure medication body_weight other].freeze
+  CATEGORIES = %w[food coffee walk run weights yoga sleep water prayer_meditation blood_pressure medication body_weight brush_teeth other].freeze
 
   belongs_to :user, optional: true
   has_many_attached :photos

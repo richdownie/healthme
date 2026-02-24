@@ -124,6 +124,16 @@ const CATEGORY_CONFIG = {
     showAmount: true,
     showMedAnalyze: true,
   },
+  brush_teeth: {
+    valueLabel: "Duration",
+    valuePlaceholder: "e.g. 2",
+    unitMode: "fixed",
+    fixedUnit: "minutes",
+    showCalories: false,
+    notesPlaceholder: "Morning, evening, etc.",
+    showPhotos: false,
+    showAmount: true,
+  },
   body_weight: {
     valueLabel: "Weight",
     valuePlaceholder: "e.g. 185",
