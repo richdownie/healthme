@@ -17,18 +17,21 @@
     <div class="flash-notice"><%= notice %></div>
   <% end %>
 
-  <div data-controller="fasting-reminder"
-       data-fasting-reminder-start-hour-value="<%= current_user.effective_fasting_start_hour %>"
-       data-fasting-reminder-today-value="<%= @date == Time.zone.today %>">
-    <div class="fasting-banner" data-fasting-reminder-target="banner"
-         style="<%= 'display:none' unless @date == Time.zone.today && current_user.fasting_active? %>">
-      <span class="fasting-icon">🌙</span>
-      <div class="fasting-text">
-        <strong>Fasting time</strong> — Only water and non-caloric fluids from now.
+  <% if @date == Time.zone.today && @last_food_at %>
+    <details class="fasting-timer-details"
+             data-controller="fasting-timer"
+             data-fasting-timer-timestamp-value="<%= @last_food_at.iso8601 %>">
+      <summary class="fasting-banner fasting-timer-summary">
+        <span class="fasting-icon">🌙</span>
+        <strong>Fasting</strong>
+        <span class="fasting-elapsed-inline" data-fasting-timer-target="inline">00:00:00</span>
+      </summary>
+      <div class="fasting-timer-body">
+        <span class="fasting-elapsed" data-fasting-timer-target="time">00:00:00</span>
+        <span class="fasting-last-meal" data-fasting-timer-target="lastMeal">Last meal: <%= @last_food_at.in_time_zone.strftime("%-I:%M %p") %></span>
       </div>
-      <button class="btn btn-sm btn-outline" data-action="fasting-reminder#enableNotifications" style="margin-left:auto; white-space:nowrap;">Enable Alerts</button>
-    </div>
-  </div>
+    </details>
+  <% end %>
 
   <% total_burned = @calories_burned + (@recommendations ? @recommendations[:daily_burn] : 0) %>
   <% total_net = @calories_in - total_burned %>

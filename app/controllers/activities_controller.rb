@@ -10,6 +10,10 @@ class ActivitiesController < ApplicationController
     @calories_net = @calories_in - @calories_burned
     @macros = @activities.macro_totals
     @recommendations = current_user.recommendations
+    @last_food_at = current_user.activities
+      .where(category: %w[food coffee])
+      .order(created_at: :desc)
+      .pick(:created_at)
     @prev_activities = filter_already_added(
       current_user.activities.on_date(@date - 1.day).order(:category, :created_at),
       @activities
