@@ -30,7 +30,8 @@ class MetricsController < ApplicationController
       blood_pressure: bp_readings(activities),
       sleep_hours: dates.map { |d| day_sum(grouped[d], %w[sleep], :value) },
       prayer_minutes: dates.map { |d| day_sum(grouped[d], %w[prayer_meditation], :value) },
-      medication_count: dates.map { |d| day_count(grouped[d], %w[medication]) }
+      medication_count: dates.map { |d| day_count(grouped[d], %w[medication]) },
+      body_weight: weight_readings(activities)
     }
   end
 
@@ -44,6 +45,12 @@ class MetricsController < ApplicationController
   def day_count(day_activities, categories)
     return 0 unless day_activities
     day_activities.count { |a| a.category.in?(categories) }
+  end
+
+  def weight_readings(activities)
+    activities.where(category: "body_weight").order(:performed_on, :created_at).map do |a|
+      { date: a.performed_on.iso8601, value: a.value.to_f, unit: a.unit }
+    end
   end
 
   def bp_readings(activities)

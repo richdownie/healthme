@@ -124,6 +124,16 @@ const CATEGORY_CONFIG = {
     showAmount: true,
     showMedAnalyze: true,
   },
+  body_weight: {
+    valueLabel: "Weight",
+    valuePlaceholder: "e.g. 185",
+    unitMode: "select",
+    unitOptions: ["lbs", "kg"],
+    showCalories: false,
+    notesPlaceholder: "Time of day, conditions, etc.",
+    showPhotos: false,
+    showAmount: true,
+  },
   other: {
     valueLabel: "Amount",
     valuePlaceholder: "e.g. 3.5",

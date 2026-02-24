@@ -3,7 +3,7 @@ import "chart.js/auto"
 
 export default class extends Controller {
   static targets = ["startDate", "endDate", "caloriesChart", "macrosChart", "exerciseChart",
-                     "bpChart", "waterChart", "sleepChart", "prayerChart", "medicationChart"]
+                     "bpChart", "waterChart", "sleepChart", "prayerChart", "medicationChart", "weightChart"]
   static values = { url: String, start: String, end: String, waterGoal: Number, prayerGoal: Number, calorieGoal: Number }
 
   #charts = {}
@@ -48,6 +48,7 @@ export default class extends Controller {
     this.#renderSleep(labels, data)
     this.#renderPrayer(labels, data)
     this.#renderMedication(labels, data)
+    this.#renderWeight(data)
   }
 
   #renderCalories(labels, data) {
@@ -181,6 +182,42 @@ export default class extends Controller {
         ]
       },
       options: this.#barOpts("")
+    })
+  }
+
+  #renderWeight(data) {
+    const entries = data.body_weight
+    if (entries.length === 0) {
+      this.weightChartTarget.parentElement.style.display = "none"
+      return
+    }
+    this.weightChartTarget.parentElement.style.display = ""
+    const unit = entries[0].unit || "lbs"
+    const labels = entries.map(r => {
+      const date = new Date(r.date + "T12:00:00")
+      return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    })
+    this.#chart("weight", this.weightChartTarget, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Body Weight",
+            data: entries.map(r => r.value),
+            borderColor: "#8b5cf6",
+            backgroundColor: "rgba(139,92,246,0.1)",
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        scales: { y: { beginAtZero: false, ticks: { callback: v => `${v} ${unit}` } } },
+        interaction: { mode: "index", intersect: false },
+        plugins: { tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y} ${unit}` } } }
+      }
     })
   }
 
