@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :activities do
     patch :quick_update, on: :member
     post :duplicate, on: :member
+    post :dismiss_repeat, on: :member
     post :estimate_calories, on: :collection
     post :analyze_bp, on: :collection
     post :analyze_medication, on: :collection

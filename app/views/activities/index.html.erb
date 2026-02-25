@@ -150,7 +150,7 @@
                 duplicate_activity_path(prev, date: @date),
                 method: :post,
                 class: "tag-btn" %>
-            <button type="button" class="tag-dismiss" onclick="this.closest('.tag-wrapper').remove()">&times;</button>
+            <button type="button" class="tag-dismiss" onclick="fetch('<%= dismiss_repeat_activity_path(prev) %>', {method:'POST',headers:{'X-CSRF-Token':document.querySelector('meta[name=csrf-token]').content}}).then(()=>this.closest('.tag-wrapper').remove())">&times;</button>
           </div>
         <% end %>
       </div>

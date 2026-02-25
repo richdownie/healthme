@@ -1,5 +1,5 @@
 class ActivitiesController < ApplicationController
-  before_action :set_activity, only: %i[edit update destroy quick_update duplicate]
+  before_action :set_activity, only: %i[edit update destroy quick_update duplicate dismiss_repeat]
 
   def index
     @date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
@@ -15,13 +15,20 @@ class ActivitiesController < ApplicationController
       .where(category: %w[food coffee])
       .order(created_at: :desc)
       .pick(:created_at)
+    dismissed = session[:dismissed_repeat_ids] || []
     @prev_activities = filter_by_time_period(
       filter_already_added(
         current_user.activities.on_date(@date - 1.day).order(:category, :created_at),
         @activities
       )
-    )
+    ).reject { |a| dismissed.include?(a.id) }
     @time_period = current_time_period
+  end
+
+  def dismiss_repeat
+    session[:dismissed_repeat_ids] ||= []
+    session[:dismissed_repeat_ids] |= [@activity.id]
+    head :ok
   end
 
   def new
