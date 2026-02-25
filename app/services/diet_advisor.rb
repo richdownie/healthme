@@ -11,7 +11,7 @@ class DietAdvisor
   # @param recommendations [Hash, nil] from HealthCalculator
   # @return [String, nil] markdown-formatted tips or nil
   def self.advise(user:, activities:, recommendations:, last_food_at: nil, question: nil)
-    api_key = ENV["ANTHROPIC_API_KEY"]
+    api_key = user.anthropic_api_key.presence || ENV["ANTHROPIC_API_KEY"]
     return nil unless api_key.present?
     return nil unless user.profile_complete?
 

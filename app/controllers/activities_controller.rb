@@ -72,7 +72,8 @@ class ActivitiesController < ApplicationController
       category: params[:category],
       value: params[:value],
       unit: params[:unit],
-      health_concerns: current_user.health_concerns
+      health_concerns: current_user.health_concerns,
+      api_key: current_user.anthropic_api_key
     )
 
     if result

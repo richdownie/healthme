@@ -128,6 +128,24 @@
       </div>
     </fieldset>
 
+    <fieldset class="profile-section">
+      <legend class="section-title">AI Settings</legend>
+
+      <div class="form-group">
+        <%= f.label :anthropic_api_key, "Anthropic API Key" %>
+        <%= f.password_field :anthropic_api_key,
+            value: @user.anthropic_api_key.present? ? "••••••••" : "",
+            placeholder: "sk-ant-...",
+            class: "form-input",
+            autocomplete: "off" %>
+        <span class="form-hint">
+          Optional. Your own API key for AI features (diet tips, calorie estimation, health analysis).
+          Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>.
+          Leave blank to use the app's shared key.
+        </span>
+      </div>
+    </fieldset>
+
     <div class="form-actions">
       <%= f.submit "Save Profile", class: "btn btn-primary" %>
       <%= link_to "Cancel", profile_path, class: "btn btn-outline" %>

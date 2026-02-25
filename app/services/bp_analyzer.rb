@@ -5,7 +5,7 @@ class BpAnalyzer
   MODEL = "claude-haiku-4-5-20251001"
 
   def self.analyze(systolic:, diastolic:, user:, activities_today: [])
-    api_key = ENV["ANTHROPIC_API_KEY"]
+    api_key = user.anthropic_api_key.presence || ENV["ANTHROPIC_API_KEY"]
     return nil unless api_key.present?
     return nil unless systolic.present? && diastolic.present?
 

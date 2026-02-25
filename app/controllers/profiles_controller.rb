@@ -19,7 +19,11 @@ class ProfilesController < ApplicationController
 
   def update
     @user = current_user
-    if @user.update(profile_params)
+    filtered = profile_params
+    if filtered[:anthropic_api_key] == "••••••••"
+      filtered = filtered.except(:anthropic_api_key)
+    end
+    if @user.update(filtered)
       redirect_to profile_path, notice: "Profile updated!"
     else
       render :edit, status: :unprocessable_entity
@@ -33,7 +37,7 @@ class ProfilesController < ApplicationController
       :display_name, :weight, :height, :date_of_birth, :sex, :race_ethnicity,
       :activity_level, :health_concerns, :blood_pressure_systolic,
       :blood_pressure_diastolic, :goal, :timezone, :prayer_goal_minutes, :water_goal_cups,
-      :fasting_start_hour
+      :fasting_start_hour, :anthropic_api_key
     )
   end
 end
