@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :activities, dependent: :destroy
+  encrypts :anthropic_api_key
 
   SEXES = %w[male female other].freeze
   ACTIVITY_LEVELS = %w[sedentary lightly_active moderately_active very_active extra_active].freeze
