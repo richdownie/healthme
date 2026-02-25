@@ -1132,6 +1132,35 @@ select.form-input { appearance: auto; }
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
+.tag-wrapper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.tag-wrapper .tag-btn {
+  border: none;
+  border-radius: 20px 0 0 20px;
+  padding-right: 8px;
+}
+.tag-dismiss {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  background: var(--color-surface);
+  border: none;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-text-muted, #999);
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+}
+.tag-dismiss:hover {
+  background: #fee;
+  color: #c00;
+}
 
 /* Biometric Lock Overlay */
 .biometric-overlay {

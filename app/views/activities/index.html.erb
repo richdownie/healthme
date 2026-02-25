@@ -145,10 +145,13 @@
       <h4 class="prev-day-title">Repeat from <%= (@date - 1.day) == Time.zone.today ? "today" : (@date - 1.day).strftime("%A") %> <%= @time_period %></h4>
       <div class="tag-list">
         <% @prev_activities.each do |prev| %>
-          <%= button_to activity_tag_label(prev),
-              duplicate_activity_path(prev, date: @date),
-              method: :post,
-              class: "tag-btn" %>
+          <div class="tag-wrapper">
+            <%= button_to activity_tag_label(prev),
+                duplicate_activity_path(prev, date: @date),
+                method: :post,
+                class: "tag-btn" %>
+            <button type="button" class="tag-dismiss" onclick="this.closest('.tag-wrapper').remove()">&times;</button>
+          </div>
         <% end %>
       </div>
     </div>
