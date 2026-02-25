@@ -177,16 +177,24 @@
         <% @grouped.each do |category, activities| %>
           <%
             progress_class = nil
+            progress_msg = nil
             if category.in?(%w[weights yoga]) && @yesterday_totals[category].to_f > 0
               today_total = activities.sum { |a| a.value.to_f }
               yesterday_total = @yesterday_totals[category].to_f
-              ratio = today_total / yesterday_total
-              progress_class = if ratio >= 1.0
+              pct = (today_total / yesterday_total * 100).round
+              progress_class = if pct >= 100
                 "progress-green"
-              elsif ratio >= 0.75
+              elsif pct >= 75
                 "progress-yellow"
               else
                 "progress-red"
+              end
+              progress_msg = if pct >= 100
+                "You beat yesterday! #{pct}% of yesterday's volume."
+              elsif pct >= 75
+                "Almost there! #{pct}% of yesterday — keep going!"
+              else
+                "#{pct}% of yesterday's volume. You got this!"
               end
             end
           %>
@@ -200,6 +208,10 @@
                 <% if cat_cal > 0 %>
                   <span class="category-cal"><%= activities.first&.intake? ? "+" : "-" %><%= cat_cal %> cal</span>
                 <% end %>
+              <% end %>
+              <% if progress_class %>
+                <span class="progress-info" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('visible')">i</span>
+                <span class="progress-tooltip"><%= progress_msg %></span>
               <% end %>
               <span class="category-chevron"></span>
             </summary>

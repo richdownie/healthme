@@ -234,6 +234,40 @@ body {
 .category-group.progress-red { border-left: 4px solid #ef4444; }
 .category-group.progress-yellow { border-left: 4px solid #eab308; }
 .category-group.progress-green { border-left: 4px solid #22c55e; }
+.progress-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+.progress-tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  right: 16px;
+  margin-top: 4px;
+  padding: 8px 12px;
+  background: var(--color-text);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 8px;
+  z-index: 10;
+  line-height: 1.4;
+}
+.progress-tooltip.visible { display: block; }
+.category-title { position: relative; }
 .category-title {
   font-size: 16px;
   font-weight: 700;
