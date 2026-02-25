@@ -231,6 +231,9 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
 }
+.category-group.progress-red { border-left: 4px solid #ef4444; }
+.category-group.progress-yellow { border-left: 4px solid #eab308; }
+.category-group.progress-green { border-left: 4px solid #22c55e; }
 .category-title {
   font-size: 16px;
   font-weight: 700;

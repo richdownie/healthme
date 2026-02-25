@@ -23,6 +23,11 @@ class ActivitiesController < ApplicationController
       )
     ).reject { |a| dismissed.include?(a.id) }
     @time_period = current_time_period
+    @yesterday_totals = current_user.activities
+      .on_date(@date - 1.day)
+      .where(category: %w[weights yoga])
+      .group(:category)
+      .sum(:value)
   end
 
   def dismiss_repeat

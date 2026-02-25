@@ -175,7 +175,22 @@
 
       <div class="activity-groups" data-sort-toggle-target="grouped">
         <% @grouped.each do |category, activities| %>
-          <details class="category-group">
+          <%
+            progress_class = nil
+            if category.in?(%w[weights yoga]) && @yesterday_totals[category].to_f > 0
+              today_total = activities.sum { |a| a.value.to_f }
+              yesterday_total = @yesterday_totals[category].to_f
+              ratio = today_total / yesterday_total
+              progress_class = if ratio >= 1.0
+                "progress-green"
+              elsif ratio >= 0.75
+                "progress-yellow"
+              else
+                "progress-red"
+              end
+            end
+          %>
+          <details class="category-group <%= progress_class %>">
             <summary class="category-title">
               <span class="category-icon"><%= category_icon(category) %></span>
               <%= category_label(category) %>
