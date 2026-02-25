@@ -159,6 +159,7 @@
 
   <% if @activities.any? && current_user.profile_complete? %>
     <div class="diet-tips-section" data-controller="diet-tips" data-diet-tips-url-value="<%= diet_tips_activities_path(date: @date) %>">
+      <input type="text" data-diet-tips-target="question" placeholder="Ask a question about your health..." class="tips-question-input">
       <button class="btn btn-outline btn-block" data-diet-tips-target="button" data-action="diet-tips#load">
         Get Daily Tips
       </button>

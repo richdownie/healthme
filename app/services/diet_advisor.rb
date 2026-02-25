@@ -10,12 +10,12 @@ class DietAdvisor
   # @param activities [Array<Activity>] today's activities
   # @param recommendations [Hash, nil] from HealthCalculator
   # @return [String, nil] markdown-formatted tips or nil
-  def self.advise(user:, activities:, recommendations:, last_food_at: nil)
+  def self.advise(user:, activities:, recommendations:, last_food_at: nil, question: nil)
     api_key = ENV["ANTHROPIC_API_KEY"]
     return nil unless api_key.present?
     return nil unless user.profile_complete?
 
-    prompt = build_prompt(user, activities, recommendations, last_food_at)
+    prompt = build_prompt(user, activities, recommendations, last_food_at, question)
     response = call_api(api_key, prompt)
     parse_response(response)
   rescue StandardError => e
@@ -23,7 +23,7 @@ class DietAdvisor
     nil
   end
 
-  private_class_method def self.build_prompt(user, activities, recs, last_food_at)
+  private_class_method def self.build_prompt(user, activities, recs, last_food_at, question)
     food_log = activities.select { |a| a.category == "food" }.map do |a|
       parts = []
       parts << "#{a.value} #{a.unit}" if a.value.present?
@@ -124,6 +124,7 @@ class DietAdvisor
       - Use a friendly, encouraging tone
       - Format as a simple numbered list (1. 2. 3.)
       - Do NOT include any preamble or closing — just the numbered tips
+      #{question ? "\n## User's Question\nThe user is also asking: #{question}\nAddress their question directly as your first tip, then continue with your other tips." : ""}
     PROMPT
   end
 

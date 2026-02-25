@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["content", "button"]
+  static targets = ["content", "button", "question"]
   static values = { url: String }
 
   async load() {
@@ -10,8 +10,14 @@ export default class extends Controller {
     this.contentTarget.innerHTML = '<p class="tips-loading">Analyzing your activities...</p>'
     this.contentTarget.style.display = "block"
 
+    let url = this.urlValue
+    const question = this.hasQuestionTarget ? this.questionTarget.value.trim() : ""
+    if (question) {
+      url += (url.includes("?") ? "&" : "?") + "question=" + encodeURIComponent(question)
+    }
+
     try {
-      const response = await fetch(this.urlValue)
+      const response = await fetch(url)
       if (!response.ok) throw new Error("Failed to load tips")
 
       const data = await response.json()

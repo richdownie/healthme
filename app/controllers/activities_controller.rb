@@ -166,7 +166,8 @@ class ActivitiesController < ApplicationController
       user: current_user,
       activities: activities,
       recommendations: recommendations,
-      last_food_at: last_food_at
+      last_food_at: last_food_at,
+      question: params[:question].presence
     )
 
     if tips
