@@ -210,7 +210,7 @@
                 <% end %>
               <% end %>
               <% if progress_class %>
-                <span class="progress-info" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('visible')">i</span>
+                <span class="progress-info" onclick="event.stopPropagation(); var tt=this.nextElementSibling; tt.classList.toggle('visible'); if(tt.classList.contains('visible')){var close=function(e){if(!tt.contains(e.target)){tt.classList.remove('visible');document.removeEventListener('click',close)}};setTimeout(function(){document.addEventListener('click',close)},0)}">i</span>
                 <span class="progress-tooltip"><%= progress_msg %></span>
               <% end %>
               <span class="category-chevron"></span>
