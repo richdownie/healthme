@@ -142,7 +142,7 @@
 
   <% if @prev_activities.any? %>
     <div class="prev-day-tags">
-      <h4 class="prev-day-title">Repeat from <%= (@date - 1.day) == Time.zone.today ? "today" : (@date - 1.day).strftime("%A") %></h4>
+      <h4 class="prev-day-title">Repeat from <%= (@date - 1.day) == Time.zone.today ? "today" : (@date - 1.day).strftime("%A") %> <%= @time_period %></h4>
       <div class="tag-list">
         <% @prev_activities.each do |prev| %>
           <%= button_to activity_tag_label(prev),

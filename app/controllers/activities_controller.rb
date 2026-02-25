@@ -15,10 +15,13 @@ class ActivitiesController < ApplicationController
       .where(category: %w[food coffee])
       .order(created_at: :desc)
       .pick(:created_at)
-    @prev_activities = filter_already_added(
-      current_user.activities.on_date(@date - 1.day).order(:category, :created_at),
-      @activities
+    @prev_activities = filter_by_time_period(
+      filter_already_added(
+        current_user.activities.on_date(@date - 1.day).order(:category, :created_at),
+        @activities
+      )
     )
+    @time_period = current_time_period
   end
 
   def new
@@ -185,6 +188,33 @@ class ActivitiesController < ApplicationController
 
   def activity_signature(activity)
     [activity.category, activity.value.to_f, activity.unit, activity.calories.to_i, activity.notes]
+  end
+
+  def current_time_period
+    hour = Time.zone.now.hour
+    if hour < 12
+      :morning
+    elsif hour < 17
+      :afternoon
+    else
+      :evening
+    end
+  end
+
+  def time_period_for(time)
+    hour = time.in_time_zone(Time.zone).hour
+    if hour < 12
+      :morning
+    elsif hour < 17
+      :afternoon
+    else
+      :evening
+    end
+  end
+
+  def filter_by_time_period(activities)
+    period = current_time_period
+    activities.select { |a| time_period_for(a.created_at) == period }
   end
 
   def filter_already_added(prev_activities, current_activities)
