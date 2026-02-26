@@ -159,7 +159,17 @@
 
   <% if @activities.any? && current_user.profile_complete? %>
     <div class="diet-tips-section" data-controller="diet-tips" data-diet-tips-url-value="<%= diet_tips_activities_path(date: @date) %>">
-      <input type="text" data-diet-tips-target="question" placeholder="Ask a question about your health..." class="tips-question-input">
+      <div class="tips-question-wrapper">
+        <input type="text" data-diet-tips-target="question" placeholder="Ask a question about your health..." class="tips-question-input">
+        <button type="button" class="dictation-btn" data-diet-tips-target="mic" data-action="diet-tips#toggleDictation" title="Dictate" aria-label="Dictate">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+      </div>
       <button class="btn btn-outline btn-block" data-diet-tips-target="button" data-action="diet-tips#load">
         Get Daily Tips
       </button>

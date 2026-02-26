@@ -367,10 +367,13 @@ details.category-group[open] .category-chevron {
 
 /* Diet Tips */
 .diet-tips-section { margin-top: 24px; }
+.tips-question-wrapper {
+  position: relative;
+  margin-bottom: 8px;
+}
 .tips-question-input {
   width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 8px;
+  padding: 10px 44px 10px 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
@@ -378,6 +381,28 @@ details.category-group[open] .category-chevron {
   background: var(--color-surface);
   color: var(--color-text);
   box-sizing: border-box;
+}
+.dictation-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background 0.2s;
+}
+.dictation-btn:hover { color: var(--color-text); background: var(--color-hover); }
+.dictation-btn.listening { color: #e53e3e; animation: pulse-mic 1.2s ease-in-out infinite; }
+@keyframes pulse-mic {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 .tips-loading {
   text-align: center;

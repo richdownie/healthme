@@ -1,8 +1,76 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["content", "button", "question"]
+  static targets = ["content", "button", "question", "mic"]
   static values = { url: String }
+
+  connect() {
+    this.recognition = null
+    this.isListening = false
+  }
+
+  disconnect() {
+    this.#stopDictation()
+  }
+
+  toggleDictation() {
+    if (this.isListening) {
+      this.#stopDictation()
+    } else {
+      this.#startDictation()
+    }
+  }
+
+  #startDictation() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      this.questionTarget.placeholder = "Speech recognition not supported"
+      return
+    }
+
+    this.recognition = new SpeechRecognition()
+    this.recognition.continuous = false
+    this.recognition.interimResults = true
+    this.recognition.lang = "en-US"
+
+    this.recognition.onstart = () => {
+      this.isListening = true
+      this.micTarget.classList.add("listening")
+    }
+
+    this.recognition.onresult = (event) => {
+      let transcript = ""
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript
+      }
+      this.questionTarget.value = transcript
+    }
+
+    this.recognition.onend = () => {
+      this.isListening = false
+      this.micTarget.classList.remove("listening")
+      this.recognition = null
+    }
+
+    this.recognition.onerror = () => {
+      this.isListening = false
+      this.micTarget.classList.remove("listening")
+      this.recognition = null
+    }
+
+    this.recognition.start()
+  }
+
+  #stopDictation() {
+    if (this.recognition) {
+      this.recognition.stop()
+      this.recognition = null
+    }
+    this.isListening = false
+    if (this.hasMicTarget) {
+      this.micTarget.classList.remove("listening")
+    }
+  }
 
   async load() {
     this.buttonTarget.disabled = true
