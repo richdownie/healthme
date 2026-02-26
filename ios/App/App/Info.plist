@@ -49,5 +49,9 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>HealthMe uses Face ID to lock the app and protect your health data.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>HealthMe uses speech recognition to let you dictate health questions.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>HealthMe needs microphone access for voice dictation.</string>
 </dict>
 </plist>

@@ -5,8 +5,8 @@ export default class extends Controller {
   static values = { url: String }
 
   connect() {
-    this.recognition = null
     this.isListening = false
+    this.resultListener = null
   }
 
   disconnect() {
@@ -21,7 +21,40 @@ export default class extends Controller {
     }
   }
 
-  #startDictation() {
+  get isNative() {
+    return window.Capacitor && window.Capacitor.isNativePlatform()
+  }
+
+  get speechPlugin() {
+    return window.Capacitor?.Plugins?.SpeechRecognition
+  }
+
+  async #startDictation() {
+    if (this.isNative && this.speechPlugin) {
+      await this.#startNativeDictation()
+    } else {
+      this.#startWebDictation()
+    }
+  }
+
+  async #startNativeDictation() {
+    try {
+      this.resultListener = await this.speechPlugin.addListener("result", (data) => {
+        this.questionTarget.value = data.transcript
+        if (data.isFinal) {
+          this.#stopDictation()
+        }
+      })
+
+      await this.speechPlugin.start()
+      this.isListening = true
+      this.micTarget.classList.add("listening")
+    } catch {
+      this.#stopDictation()
+    }
+  }
+
+  #startWebDictation() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SpeechRecognition) {
       this.questionTarget.placeholder = "Speech recognition not supported"
@@ -61,8 +94,14 @@ export default class extends Controller {
     this.recognition.start()
   }
 
-  #stopDictation() {
-    if (this.recognition) {
+  async #stopDictation() {
+    if (this.isNative && this.speechPlugin) {
+      try { await this.speechPlugin.stop() } catch { /* ignore */ }
+      if (this.resultListener) {
+        await this.resultListener.remove()
+        this.resultListener = null
+      }
+    } else if (this.recognition) {
       this.recognition.stop()
       this.recognition = null
     }
