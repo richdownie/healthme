@@ -131,8 +131,6 @@ export default class extends Controller {
       }
     } else {
       await this.storage.set({ key: "biometric_enabled", value: "false" })
-      // Remove stored key so user must sign in manually next time
-      try { await this.storage.remove({ key: "stored_nsec" }) } catch { /* key may not exist */ }
     }
   }
 

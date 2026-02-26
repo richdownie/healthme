@@ -29,15 +29,12 @@ export default class extends Controller {
 
   async checkStoredKey() {
     try {
-      const { value: enabled } = await this.storage.get({ key: "biometric_enabled" })
-      if (enabled !== "true") return
-
       const { value } = await this.storage.get({ key: "stored_nsec" })
       if (value) {
         if (this.hasSectionTarget) this.sectionTarget.style.display = ""
       }
     } catch {
-      // No stored key or biometric not enabled — keep button hidden
+      // No stored key — keep button hidden
     }
   }
 
