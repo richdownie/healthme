@@ -106,6 +106,12 @@
     <%= f.label :performed_on, "Date" %>
     <%= f.date_field :performed_on, class: "form-input", max: Time.zone.today.iso8601 %>
   </div>
+
+  <div class="form-group form-group-checkbox">
+    <%= f.check_box :repeat_daily, class: "form-checkbox" %>
+    <%= f.label :repeat_daily, "Repeat daily" %>
+    <span class="form-hint">Show as a quick-add tag every day</span>
+  </div>
   <input type="hidden" value="<%= form_authenticity_token %>" data-calorie-estimator-target="csrfToken" data-bp-analyzer-target="csrfToken" data-med-analyzer-target="csrfToken" data-sleep-analyzer-target="csrfToken">
 
   <div class="form-actions">

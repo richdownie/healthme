@@ -140,6 +140,22 @@
 
   <%= link_to "＋ Log Activity", new_activity_path(date: @date), class: "btn btn-primary btn-block" %>
 
+  <% if @daily_repeats.any? %>
+    <div class="prev-day-tags daily-repeat-tags">
+      <h4 class="prev-day-title">Daily</h4>
+      <div class="tag-list">
+        <% @daily_repeats.each do |daily| %>
+          <div class="tag-wrapper">
+            <%= button_to activity_tag_label(daily),
+                duplicate_activity_path(daily, date: @date),
+                method: :post,
+                class: "tag-btn tag-btn-daily" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <% if @prev_activities.any? %>
     <div class="prev-day-tags">
       <h4 class="prev-day-title">Repeat from <%= (@date - 1.day) == Time.zone.today ? "today" : (@date - 1.day).strftime("%A") %> <%= @time_period %></h4>

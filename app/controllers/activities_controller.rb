@@ -23,6 +23,14 @@ class ActivitiesController < ApplicationController
       )
     ).reject { |a| dismissed.include?(a.id) }
     @time_period = current_time_period
+    @daily_repeats = filter_already_added(
+      current_user.activities.where(repeat_daily: true)
+        .where.not(performed_on: @date)
+        .order(performed_on: :desc)
+        .to_a
+        .uniq { |a| activity_signature(a) },
+      @activities
+    )
     @yesterday_totals = current_user.activities
       .on_date(@date - 1.day)
       .where(category: %w[weights yoga])
@@ -197,7 +205,7 @@ class ActivitiesController < ApplicationController
 
   def activity_params
     params.require(:activity).permit(:category, :value, :unit, :notes, :performed_on, :calories,
-                                     :protein_g, :carbs_g, :fat_g, :fiber_g, :sugar_g, photos: [])
+                                     :protein_g, :carbs_g, :fat_g, :fiber_g, :sugar_g, :repeat_daily, photos: [])
   end
 
   def activity_signature(activity)

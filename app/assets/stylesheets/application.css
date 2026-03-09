@@ -465,6 +465,27 @@ select.form-input { appearance: auto; }
   gap: 12px;
 }
 .form-group-half { flex: 1; }
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.form-group-checkbox label {
+  margin: 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+.form-group-checkbox .form-hint {
+  width: 100%;
+  margin-top: 0;
+}
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
 .form-actions {
   display: flex;
   gap: 10px;
@@ -1233,6 +1254,14 @@ select.form-input { appearance: auto; }
   font-size: 15px;
   cursor: pointer;
   line-height: 1;
+}
+.daily-repeat-tags .tag-wrapper {
+  border-color: var(--color-primary);
+}
+.daily-repeat-tags .tag-btn {
+  border: none;
+  border-radius: 20px;
+  padding-right: 12px;
 }
 .tag-dismiss:hover {
   background: #fee;
