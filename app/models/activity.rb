@@ -7,6 +7,24 @@ class Activity < ApplicationRecord
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validates :performed_on, presence: true
 
+  before_validation :set_default_performed_time
+
+  def display_time
+    if performed_time
+      performed_time.strftime("%-I:%M %p")
+    else
+      created_at.in_time_zone.strftime("%-I:%M %p")
+    end
+  end
+
+  private
+
+  def set_default_performed_time
+    self.performed_time ||= Time.current if new_record?
+  end
+
+  public
+
   INTAKE_CATEGORIES = %w[food coffee water].freeze
   BURN_CATEGORIES = %w[walk run weights yoga].freeze
 

@@ -3,7 +3,7 @@ class ActivitiesController < ApplicationController
 
   def index
     @date = params[:date] ? Date.parse(params[:date]) : Time.zone.today
-    @activities = current_user.activities.on_date(@date).order(created_at: :desc).with_attached_photos
+    @activities = current_user.activities.on_date(@date).order(performed_time: :desc, created_at: :desc).with_attached_photos
     @grouped = @activities.group_by(&:category)
     @day_activities = current_user.activities.on_date(@date)
     @calories_in = @day_activities.calories_intake
@@ -204,7 +204,7 @@ class ActivitiesController < ApplicationController
   end
 
   def activity_params
-    params.require(:activity).permit(:category, :value, :unit, :notes, :performed_on, :calories,
+    params.require(:activity).permit(:category, :value, :unit, :notes, :performed_on, :performed_time, :calories,
                                      :protein_g, :carbs_g, :fat_g, :fiber_g, :sugar_g, :repeat_daily, photos: [])
   end
 
@@ -223,8 +223,12 @@ class ActivitiesController < ApplicationController
     end
   end
 
-  def time_period_for(time)
-    hour = time.in_time_zone(Time.zone).hour
+  def time_period_for(activity)
+    if activity.performed_time
+      hour = activity.performed_time.hour
+    else
+      hour = activity.created_at.in_time_zone(Time.zone).hour
+    end
     if hour < 12
       :morning
     elsif hour < 17
@@ -236,7 +240,7 @@ class ActivitiesController < ApplicationController
 
   def filter_by_time_period(activities)
     period = current_time_period
-    activities.select { |a| time_period_for(a.created_at) == period }
+    activities.select { |a| time_period_for(a) == period }
   end
 
   def filter_already_added(prev_activities, current_activities)

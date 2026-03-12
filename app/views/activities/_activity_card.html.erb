@@ -38,7 +38,7 @@
     <% if activity.notes.present? %>
       <p class="activity-notes"><%= activity.notes %></p>
     <% end %>
-    <span class="activity-time"><%= activity.created_at.in_time_zone.strftime("%-I:%M %p") %></span>
+    <span class="activity-time"><%= activity.display_time %></span>
   </div>
 
   <div class="activity-actions">

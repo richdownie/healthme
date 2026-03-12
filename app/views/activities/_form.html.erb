@@ -102,9 +102,15 @@
   <%= f.hidden_field :fiber_g,   data: { calorie_estimator_target: "fiberG" } %>
   <%= f.hidden_field :sugar_g,   data: { calorie_estimator_target: "sugarG" } %>
 
-  <div class="form-group">
-    <%= f.label :performed_on, "Date" %>
-    <%= f.date_field :performed_on, class: "form-input", max: Time.zone.today.iso8601 %>
+  <div class="form-row">
+    <div class="form-group form-group-half">
+      <%= f.label :performed_on, "Date" %>
+      <%= f.date_field :performed_on, class: "form-input", max: Time.zone.today.iso8601 %>
+    </div>
+    <div class="form-group form-group-half">
+      <%= f.label :performed_time, "Time" %>
+      <%= f.time_field :performed_time, class: "form-input", value: (activity.performed_time || Time.current).strftime("%H:%M") %>
+    </div>
   </div>
 
   <div class="form-group form-group-checkbox">
